@@ -1,0 +1,181 @@
+@import "tailwindcss";
+
+/* ============================================================
+   RUHSAT TAKİP — Tasarım sistemi
+   Gece mavisi zemin, tek eylem rengi olarak altın.
+   Durum renkleri (yeşil/kırmızı) yalnız evrak durumunda kullanılır.
+   ============================================================ */
+
+@theme {
+  /* --- Zemin: gece mavisi katmanlar --- */
+  --color-base: #080e1c; /* sayfa zemini */
+  --color-surface: #0f1930; /* panel */
+  --color-raised: #16223f; /* kart / yükseltilmiş yüzey */
+  --color-sunken: #050912; /* footer, kuyu */
+
+  /* --- Çizgiler --- */
+  --color-line: #22334f;
+  --color-line-soft: #182740;
+
+  /* --- Metin --- */
+  --color-ink: #e9edf6;
+  --color-dim: #a6b4cc;
+  --color-faint: #7c8ca8;
+
+  /* --- Eylem rengi: altın --- */
+  --color-hivis: #d9b25c; /* altın */
+  --color-hivis-ink: #120e04; /* altın zemin üstünde metin */
+
+  /* Teknik çizim dokusu */
+  --color-blueprint: #6fa8dc;
+  --color-blueprint-line: rgb(111 168 220 / 0.07);
+  --color-blueprint-fine: rgb(111 168 220 / 0.03);
+
+  --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+body {
+  background-color: var(--color-base);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* ---------- Duran İnşaat arka plan katmanı ----------
+   İki sabit katman: (1) teknik çizim ızgarası — 8px ince + 80px kalın,
+   (2) üst köşelerden inen altın ve gece mavisi ışık. Veri yoğun ekranı bozmaması için
+   opaklıklar düşük; pointer-events: none ile tıklamayı engellemez. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--color-blueprint-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-blueprint-line) 1px, transparent 1px),
+    linear-gradient(var(--color-blueprint-fine) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-blueprint-fine) 1px, transparent 1px);
+  background-size:
+    80px 80px,
+    80px 80px,
+    16px 16px,
+    16px 16px;
+  mask-image: radial-gradient(ellipse 120% 80% at 50% 0%, #000 35%, transparent 85%);
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(62rem 34rem at 10% -12%, rgb(217 178 92 / 0.14), transparent 70%),
+    radial-gradient(52rem 30rem at 100% 0%, rgb(58 96 168 / 0.22), transparent 72%),
+    linear-gradient(180deg, rgb(12 22 46 / 0.65), transparent 45%);
+}
+
+/* Şantiye şeridi — başlık altındaki ince uyarı bandı */
+.hazard-strip {
+  height: 3px;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--color-hivis) 0 10px,
+    #0b1226 10px 20px
+  );
+  opacity: 0.55;
+}
+
+/* Marka plakası: altın zeminde koyu "D" */
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 4px;
+  background: linear-gradient(145deg, #f0d089, var(--color-hivis) 55%, #b8913f);
+  color: var(--color-hivis-ink);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.05rem;
+  line-height: 1;
+  box-shadow: 0 0 0 1px rgb(217 178 92 / 0.45), 0 6px 20px -8px rgb(217 178 92 / 0.75);
+}
+
+/* ---------- Tipografi ---------- */
+html {
+  font-size: 16px;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-size: 0.9375rem; /* 15px — tablo yoğun ekranda 14'ten daha okunur */
+  line-height: 1.6;
+  letter-spacing: 0.005em;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* Sayılar her yerde aynı genişlikte: gün sayaçları ve harç sütunu kaymaz */
+.font-mono,
+table,
+input[type="number"],
+input[type="date"],
+time {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "zero" 1;
+}
+
+/* Küçük punto büyük harf etiketler — Archivo ile daha dengeli */
+.font-mono {
+  letter-spacing: 0.06em;
+}
+
+/* Form alanları: 16px altı iOS'ta sayfayı zoomlar, girdilerde 16px sabit */
+input,
+select,
+textarea,
+button {
+  font-family: inherit;
+  letter-spacing: inherit;
+}
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+::selection {
+  background: var(--color-hivis);
+  color: var(--color-hivis-ink);
+}
+
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-hivis);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Tarih girdilerinin takvim ikonu koyu zeminde görünsün */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.7);
+  cursor: pointer;
+}
