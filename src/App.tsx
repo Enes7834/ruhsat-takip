@@ -53,10 +53,11 @@ export default function App() {
           </NavLink>
 
           <span
-            aria-label="Ali Hamza Duran"
-            className="flex-1 select-none text-center text-[18px] leading-none text-hivis md:text-[30px]"
+            aria-hidden="true"
+            className="flex-1 select-none text-center text-[18px] font-semibold leading-none text-hivis md:text-[30px]"
+            style={{ fontFamily: '"Dancing Script", "Snell Roundhand", "Apple Chancery", cursive' }}
           >
-            𝓐𝓛İ 𝓗𝓐𝓜𝓩𝓐 𝓓𝓤𝓡𝓐𝓝
+            Ali Hamza Duran
           </span>
           <div className="flex items-center gap-3">
             <p className="hidden font-mono text-[11px] uppercase tracking-widest text-faint lg:block">
