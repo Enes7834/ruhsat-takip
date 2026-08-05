@@ -31,9 +31,40 @@
   --color-blueprint-line: rgb(111 168 220 / 0.07);
   --color-blueprint-fine: rgb(111 168 220 / 0.03);
 
+  /* Arka plan ışık halkalarının değişkeni — light mode override eder */
+  --bg-glow-gold: rgb(217 178 92 / 0.14);
+  --bg-glow-blue: rgb(58 96 168 / 0.22);
+  --bg-glow-top: rgb(12 22 46 / 0.65);
+
   --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* --- Aydınlık tema — html[data-theme="light"] üzerinden --- */
+html[data-theme="light"] {
+  --color-base: #f4f6fb;
+  --color-surface: #ffffff;
+  --color-raised: #f8fafd;
+  --color-sunken: #edf1f7;
+
+  --color-line: #d5dbe6;
+  --color-line-soft: #e6eaf1;
+
+  --color-ink: #0f172a;
+  --color-dim: #4a5677;
+  --color-faint: #6f7c98;
+
+  --color-hivis: #b8913f;
+  --color-hivis-ink: #ffffff;
+
+  --color-blueprint: #385a8a;
+  --color-blueprint-line: rgb(56 90 138 / 0.08);
+  --color-blueprint-fine: rgb(56 90 138 / 0.04);
+
+  --bg-glow-gold: rgb(217 178 92 / 0.20);
+  --bg-glow-blue: rgb(58 96 168 / 0.10);
+  --bg-glow-top: rgb(255 255 255 / 0.6);
 }
 
 body {
@@ -74,9 +105,14 @@ body::after {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(62rem 34rem at 10% -12%, rgb(217 178 92 / 0.14), transparent 70%),
-    radial-gradient(52rem 30rem at 100% 0%, rgb(58 96 168 / 0.22), transparent 72%),
-    linear-gradient(180deg, rgb(12 22 46 / 0.65), transparent 45%);
+    radial-gradient(62rem 34rem at 10% -12%, var(--bg-glow-gold), transparent 70%),
+    radial-gradient(52rem 30rem at 100% 0%, var(--bg-glow-blue), transparent 72%),
+    linear-gradient(180deg, var(--bg-glow-top), transparent 45%);
+}
+
+/* Date picker ikonu light mode'da ters işlem istemiyor */
+html[data-theme="light"] input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: none;
 }
 
 /* Şantiye şeridi — başlık altındaki ince uyarı bandı */
@@ -178,4 +214,46 @@ button {
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(0.7);
   cursor: pointer;
+}
+
+/* ---------- Yazdırma / PDF ---------- */
+@media print {
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  body::before,
+  body::after {
+    display: none !important;
+  }
+  header,
+  footer,
+  .hazard-strip,
+  .no-print {
+    display: none !important;
+  }
+  main {
+    display: block !important;
+  }
+  a {
+    color: inherit !important;
+    text-decoration: none !important;
+  }
+  input,
+  select,
+  textarea {
+    border: none !important;
+    background: transparent !important;
+    color: #000 !important;
+    padding: 0 !important;
+  }
+  .print-block {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  section {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
 }

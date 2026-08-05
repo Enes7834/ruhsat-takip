@@ -4,13 +4,13 @@ import { StageStepper, StatusBadge, ManualField, inputCls } from "../components/
 import {
   MUNICIPALITIES,
   PERMIT_DEMO,
+  copyPermitProject,
   createPermitProject,
   deletePermitProject,
   deriveProject,
   listPermitProjects,
   listPermitTasks,
   money,
-  seedDemoProject,
   type PermitProject,
   type PermitTask,
   type ProjectDerived,
@@ -56,7 +56,8 @@ export default function PermitsPage() {
     const revisions = rows.reduce((s, r) => s + r.d.revisionCount, 0);
     const expiring = rows.reduce((s, r) => s + r.d.expiringCount, 0);
     const worst = rows.reduce((s, r) => Math.max(s, r.d.worstWaitDays), 0);
-    return { fees, revisions, expiring, worst };
+    const expiringRows = rows.filter((r) => r.d.expiringCount > 0);
+    return { fees, revisions, expiring, worst, expiringRows };
   }, [rows]);
 
   const visible = useMemo(() => {
@@ -75,6 +76,17 @@ export default function PermitsPage() {
     if (!window.confirm(`"${name}" dosyası ve tüm evrakları silinsin mi?`)) return;
     await deletePermitProject(id);
     await load();
+  };
+
+  const onCopy = async (id: string, name: string) => {
+    const newName = window.prompt(`"${name}" dosyasının kopyası — yeni proje adı:`, `${name} — Kopya`);
+    if (!newName?.trim()) return;
+    try {
+      await copyPermitProject(id, newName.trim());
+      await load();
+    } catch (e) {
+      setErr(`Kopyalanamadı: ${errMsg(e)}`);
+    }
   };
 
   const onCreate = async (e: FormEvent<HTMLFormElement>) => {
@@ -121,25 +133,8 @@ export default function PermitsPage() {
         <div className="flex gap-2">
           <button
             type="button"
-            disabled={busy}
-            onClick={async () => {
-              setBusy(true);
-              try {
-                await seedDemoProject();
-                await load();
-              } catch (e) {
-                setErr(`Örnek dosya oluşturulamadı: ${errMsg(e)}`);
-              }
-              setBusy(false);
-            }}
-            className="rounded-sm border border-line px-4 py-2.5 text-sm font-semibold text-dim transition-colors hover:border-hivis hover:text-hivis"
-          >
-            Örnek dosya ekle
-          </button>
-          <button
-            type="button"
             onClick={() => setOpen((v) => !v)}
-            className="rounded-sm bg-hivis px-5 py-2.5 text-sm font-semibold text-hivis-ink transition-colors hover:bg-[#e8c67a]"
+            className="rounded-sm bg-hivis px-5 py-2.5 text-sm font-semibold text-hivis-ink transition-colors hover:brightness-110"
           >
             {open ? "Vazgeç" : "+ Yeni Ruhsat Dosyası"}
           </button>
@@ -247,9 +242,21 @@ export default function PermitsPage() {
         <Kpi label="En uzun bekleyen" value={`${kpi.worst} gün`} tone={kpi.worst >= 21 ? "amber" : "gray"} />
       </div>
       {kpi.expiring > 0 && (
-        <p className="mt-3 rounded-sm border border-[#ff6b6b]/40 bg-[#ff6b6b]/10 px-4 py-2.5 text-sm text-[#ff8f8f]">
-          {kpi.expiring} belgenin geçerlilik süresi 30 günden az — yenileme gerekiyor.
-        </p>
+        <div className="mt-3 rounded-sm border border-[#ff6b6b]/40 bg-[#ff6b6b]/10 px-4 py-3 text-sm text-[#ff8f8f]">
+          <p className="font-semibold">
+            {kpi.expiring} belgenin geçerlilik süresi 30 günden az — yenileme gerekiyor.
+          </p>
+          <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs">
+            {kpi.expiringRows.map(({ project, d }) => (
+              <li key={project.id}>
+                <Link to={`/surec/${project.id}`} className="underline underline-offset-2 hover:text-ink">
+                  {project.name}
+                </Link>
+                <span className="text-[#ff8f8f]/70"> · {d.expiringCount} belge</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
 
       {rows.length > 0 && (
@@ -281,7 +288,7 @@ export default function PermitsPage() {
         <div className="mt-10 rounded-sm border border-dashed border-line p-10 text-center">
           <p className="text-dim">Henüz ruhsat dosyası yok.</p>
           <p className="mt-1 text-sm text-faint">
-            "Örnek dosya ekle" ile dolu bir panoyu inceleyebilir ya da kendi dosyanı açabilirsin.
+            Sağ üstteki "+ Yeni Ruhsat Dosyası" ile ilk dosyanı açabilirsin.
           </p>
         </div>
       ) : visible.length === 0 ? (
@@ -339,16 +346,28 @@ export default function PermitsPage() {
                     <td className="px-4 py-4 text-right font-mono text-dim">{money(d.totalFees)}</td>
                     <td className="max-w-xs px-4 py-4 text-xs text-dim">
                       {d.nextAction}
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          void onDelete(project.id, project.name);
-                        }}
-                        className="mt-2 block text-[11px] text-faint hover:text-[#ff8f8f]"
-                      >
-                        Dosyayı sil
-                      </button>
+                      <div className="mt-2 flex gap-3 text-[11px] text-faint">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            void onCopy(project.id, project.name);
+                          }}
+                          className="hover:text-hivis"
+                        >
+                          Kopyala
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            void onDelete(project.id, project.name);
+                          }}
+                          className="hover:text-[#ff8f8f]"
+                        >
+                          Dosyayı sil
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -359,32 +378,41 @@ export default function PermitsPage() {
           {/* Mobil: kart */}
           <div className="mt-8 grid gap-4 lg:hidden">
             {visible.map(({ project, d }) => (
-              <Link
+              <div
                 key={project.id}
-                to={`/surec/${project.id}`}
-                className="block rounded-sm border border-line bg-surface p-5 transition-colors hover:border-hivis/50"
+                className="rounded-sm border border-line bg-surface p-5 transition-colors hover:border-hivis/50"
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h2 className="font-semibold text-ink">{project.name}</h2>
-                    <p className="mt-0.5 text-xs text-faint">
-                      {project.municipality} · {project.ada}/{project.pafta}/{project.parsel}
-                    </p>
+                <Link to={`/surec/${project.id}`} className="block">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <h2 className="font-semibold text-ink">{project.name}</h2>
+                      <p className="mt-0.5 text-xs text-faint">
+                        {project.municipality} · {project.ada}/{project.pafta}/{project.parsel}
+                      </p>
+                    </div>
+                    <StatusBadge tone={d.revisionCount ? "red" : d.progress === 1 ? "green" : "amber"}>
+                      Evre {d.activeStage}
+                    </StatusBadge>
                   </div>
-                  <StatusBadge tone={d.revisionCount ? "red" : d.progress === 1 ? "green" : "amber"}>
-                    Evre {d.activeStage}
-                  </StatusBadge>
+                  <div className="mt-4">
+                    <StageStepper stages={d.stages} compact />
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-xs text-dim">
+                    <span>%{Math.round(d.progress * 100)} tamam</span>
+                    {d.worstWaitDays > 0 && <span>{d.worstWaitDays} gündür belediyede</span>}
+                    <span>{money(d.totalFees)} harç</span>
+                  </div>
+                  <p className="mt-3 text-xs text-hivis">{d.nextAction}</p>
+                </Link>
+                <div className="mt-4 flex gap-4 border-t border-line-soft pt-3 text-[11px] text-faint">
+                  <button type="button" onClick={() => void onCopy(project.id, project.name)} className="hover:text-hivis">
+                    Kopyala
+                  </button>
+                  <button type="button" onClick={() => void onDelete(project.id, project.name)} className="hover:text-[#ff8f8f]">
+                    Dosyayı sil
+                  </button>
                 </div>
-                <div className="mt-4">
-                  <StageStepper stages={d.stages} compact />
-                </div>
-                <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-xs text-dim">
-                  <span>%{Math.round(d.progress * 100)} tamam</span>
-                  {d.worstWaitDays > 0 && <span>{d.worstWaitDays} gündür belediyede</span>}
-                  <span>{money(d.totalFees)} harç</span>
-                </div>
-                <p className="mt-3 text-xs text-hivis">{d.nextAction}</p>
-              </Link>
+              </div>
             ))}
           </div>
         </>

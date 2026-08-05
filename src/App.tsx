@@ -3,6 +3,7 @@ import PermitsPage from "./pages/PermitsPage";
 import PermitDetailPage from "./pages/PermitDetailPage";
 import TariffPage from "./pages/TariffPage";
 import CalculatorPage from "./pages/CalculatorPage";
+import ThemeToggle from "./components/ThemeToggle";
 
 export default function App() {
   return (
@@ -48,10 +49,11 @@ export default function App() {
             Hesaplama
           </NavLink>
 
-          <div className="ml-auto flex items-center gap-4">
+          <div className="ml-auto flex items-center gap-3">
             <p className="hidden font-mono text-[11px] uppercase tracking-widest text-faint lg:block">
               Belediye Onay & Ruhsat Süreci
             </p>
+            <ThemeToggle />
           </div>
         </nav>
         <div className="hazard-strip" />

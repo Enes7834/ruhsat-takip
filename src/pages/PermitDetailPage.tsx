@@ -106,17 +106,26 @@ export default function PermitDetailPage() {
 
   return (
     <section className="mx-auto max-w-7xl px-5 py-10 md:px-8">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center justify-between gap-3 no-print">
         <Link to="/surec" className="font-mono text-xs uppercase tracking-widest text-faint hover:text-hivis">
           ← Ruhsat Panosu
         </Link>
-        <button
-          type="button"
-          onClick={onDelete}
-          className="rounded-sm border border-line px-3 py-1.5 text-xs font-semibold text-faint transition-colors hover:border-[#ff6b6b] hover:text-[#ff8f8f]"
-        >
-          Dosyayı sil
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => window.print()}
+            className="rounded-sm border border-line px-3 py-1.5 text-xs font-semibold text-dim transition-colors hover:border-hivis hover:text-hivis"
+          >
+            PDF / Yazdır
+          </button>
+          <button
+            type="button"
+            onClick={onDelete}
+            className="rounded-sm border border-line px-3 py-1.5 text-xs font-semibold text-faint transition-colors hover:border-[#ff6b6b] hover:text-[#ff8f8f]"
+          >
+            Dosyayı sil
+          </button>
+        </div>
       </div>
 
       {/* Künye — manuel alanlar, alandan çıkınca kaydeder */}

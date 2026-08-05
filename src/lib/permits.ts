@@ -486,6 +486,26 @@ export async function seedDemoProject(): Promise<PermitProject> {
   return p;
 }
 
+/** Mevcut projeyi şablon olarak kopyala — künye taşınır, evraklar sıfırlanır. */
+export async function copyPermitProject(sourceId: string, newName: string): Promise<PermitProject> {
+  const projects = await listPermitProjects();
+  const src = projects.find((p) => p.id === sourceId);
+  if (!src) throw new Error("Kaynak proje bulunamadı.");
+  return createPermitProject({
+    name: newName,
+    municipality: src.municipality,
+    ada: src.ada,
+    pafta: src.pafta,
+    parsel: src.parsel,
+    current_stage: 1,
+    note: "",
+    area_m2: src.area_m2,
+    usage: src.usage,
+    unit_count: src.unit_count,
+    parcel_m2: src.parcel_m2,
+  });
+}
+
 export async function updatePermitProject(
   id: string,
   patch: Partial<PermitProject>,
