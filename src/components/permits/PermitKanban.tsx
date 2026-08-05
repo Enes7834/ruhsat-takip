@@ -1,4 +1,4 @@
-import { STAGES, deriveTask, todayISO, type PermitTask, type StageProgress } from "../../lib/permits";
+import { STAGES, deriveTask, todayISO, type PermitTask, type StageNo, type StageProgress } from "../../lib/permits";
 
 const DOT: Record<string, string> = {
   gray: "bg-line",
@@ -23,11 +23,17 @@ export default function PermitKanban({
   stages,
   onOpen,
   onPatch,
+  onBulkSubmit,
+  onBulkApprove,
+  onBulkRevision,
 }: {
   tasks: PermitTask[];
   stages: StageProgress[];
   onOpen: (taskId: string) => void;
   onPatch: (taskId: string, patch: Partial<PermitTask>) => void;
+  onBulkSubmit?: (stage: StageNo) => void;
+  onBulkApprove?: (stage: StageNo) => void;
+  onBulkRevision?: (stage: StageNo) => void;
 }) {
   return (
     <div className="-mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 md:mx-0 md:grid md:grid-cols-2 md:px-0 xl:grid-cols-4">
@@ -53,6 +59,17 @@ export default function PermitKanban({
               <p className="mt-1.5 text-[11px] text-faint">
                 {prog.done}/{prog.total} onaylı{prog.blocked > 0 ? ` · ${prog.blocked} eksik` : ""}
               </p>
+              {(onBulkSubmit || onBulkApprove || onBulkRevision) && (
+                <div className="mt-2 flex gap-1.5">
+                  {onBulkSubmit && <Mini label="Teslim" title="Tüm evrağı bugüne teslim yap" onClick={() => onBulkSubmit(s.no)} />}
+                  {onBulkApprove && (
+                    <Mini label="Onayla" title="Tüm evrağı bugüne onayla" tone="green" onClick={() => onBulkApprove(s.no)} />
+                  )}
+                  {onBulkRevision && (
+                    <Mini label="Revizyon" title="Tüm evrağa ortak revizyon notu" tone="red" onClick={() => onBulkRevision(s.no)} />
+                  )}
+                </div>
+              )}
             </header>
 
             <div className="space-y-2">

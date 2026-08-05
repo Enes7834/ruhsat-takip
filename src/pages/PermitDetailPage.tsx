@@ -13,6 +13,7 @@ import {
   deriveTask,
   listPermitProjects,
   listPermitTasks,
+  todayISO,
   updatePermitProject,
   updatePermitTask,
   type PermitProject,
@@ -84,6 +85,35 @@ export default function PermitDetailPage() {
     setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, ...patch } : t)));
     void updatePermitTask(taskId, patch);
     setSaveTick((n) => n + 1);
+  };
+
+  // Bir evredeki tüm evraklara aynı yamayı uygula — hızlı toplu aksiyon
+  const bulkPatchStage = (stage: StageNo, build: (t: PermitTask) => Partial<PermitTask> | null) => {
+    const patches = tasks.filter((t) => t.stage === stage).map((t) => ({ t, patch: build(t) }));
+    const changes = patches.filter((x) => x.patch !== null) as { t: PermitTask; patch: Partial<PermitTask> }[];
+    if (!changes.length) return;
+    setTasks((prev) =>
+      prev.map((t) => {
+        const c = changes.find((x) => x.t.id === t.id);
+        return c ? { ...t, ...c.patch } : t;
+      }),
+    );
+    for (const c of changes) void updatePermitTask(c.t.id, c.patch);
+    setSaveTick((n) => n + 1);
+  };
+
+  const bulkSubmit = (s: StageNo) => {
+    if (!window.confirm(`Evre ${s} — bugüne teslim olarak işaretlensin mi? (Onaylı evraklar atlanır.)`)) return;
+    bulkPatchStage(s, (t) => (t.approved_at || t.submitted_at ? null : { submitted_at: todayISO() }));
+  };
+  const bulkApprove = (s: StageNo) => {
+    if (!window.confirm(`Evre ${s} — bugüne onaylı olarak işaretlensin mi?`)) return;
+    bulkPatchStage(s, (t) => (t.approved_at ? null : { approved_at: todayISO(), revision_note: null }));
+  };
+  const bulkRevision = (s: StageNo) => {
+    const note = window.prompt(`Evre ${s} — belediyenin revizyon / eksik notu:`, "");
+    if (!note?.trim()) return;
+    bulkPatchStage(s, (t) => (t.approved_at ? null : { revision_note: note.trim(), submitted_at: null }));
   };
 
   const removeTask = async (taskId: string) => {
@@ -272,12 +302,45 @@ export default function PermitDetailPage() {
 
       <div className="mt-4">
         {view === "slot" ? (
-          <PermitKanban tasks={tasks} stages={d.stages} onOpen={setOpenTask} onPatch={patchTask} />
+          <PermitKanban
+            tasks={tasks}
+            stages={d.stages}
+            onOpen={setOpenTask}
+            onPatch={patchTask}
+            onBulkSubmit={bulkSubmit}
+            onBulkApprove={bulkApprove}
+            onBulkRevision={bulkRevision}
+          />
         ) : (
           <>
-            <h2 className="mb-3 font-display text-lg font-bold text-ink">
-              Evre {stage} — {STAGES.find((s) => s.no === stage)!.title}
-            </h2>
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+              <h2 className="font-display text-lg font-bold text-ink">
+                Evre {stage} — {STAGES.find((s) => s.no === stage)!.title}
+              </h2>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => bulkSubmit(stage)}
+                  className="rounded-sm border border-line px-3 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-dim transition-colors hover:border-hivis hover:text-hivis"
+                >
+                  Teslim
+                </button>
+                <button
+                  type="button"
+                  onClick={() => bulkApprove(stage)}
+                  className="rounded-sm border border-[#3ddc84]/40 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-[#5ae5a0] transition-colors hover:border-[#3ddc84] hover:bg-[#3ddc84]/10"
+                >
+                  Onayla
+                </button>
+                <button
+                  type="button"
+                  onClick={() => bulkRevision(stage)}
+                  className="rounded-sm border border-[#ff6b6b]/40 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-[#ff8f8f] transition-colors hover:border-[#ff6b6b] hover:bg-[#ff6b6b]/10"
+                >
+                  Revizyon
+                </button>
+              </div>
+            </div>
             <div className="space-y-2">
               {stageTasks.map((t) => {
                 const td = deriveTask(t);
