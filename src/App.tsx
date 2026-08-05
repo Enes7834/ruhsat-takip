@@ -63,7 +63,7 @@ export default function App() {
       </header>
       <aside
         aria-hidden="true"
-        className="pointer-events-none fixed right-4 top-2 z-50 select-none text-hivis"
+        className="pointer-events-none fixed right-4 top-4 z-50 select-none text-hivis"
         style={{ fontFamily: '"Great Vibes", "Snell Roundhand", "Apple Chancery", cursive', fontSize: "26px", lineHeight: 1 }}
       >
         Ali Hamza Duran
