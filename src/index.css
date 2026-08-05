@@ -44,29 +44,31 @@
 
 /* --- Aydınlık tema — html[data-theme="light"] üzerinden --- */
 html[data-theme="light"] {
-  /* Panel altın rengi: #a37e2c (antik/bronz altın). Buz mavisi zemin ile kontrast. */
-  --color-base: #ecf1f8;        /* buz mavisi zemin */
-  --color-surface: #a37e2c;     /* PANEL — istenen antik altın */
-  --color-raised: #b8923a;      /* KART — biraz aydınlık altın (elevation) */
-  --color-sunken: #7a5c1e;      /* footer — daha koyu altın */
+  /* Premium belge paleti: sıcak fildişi paneller, buz mavisi kırıklı zemin,
+     zengin altın aksan seyrek göze çarpar (kart üstünde border, buton, ince
+     çizgiler). Dominant altın yerine — altın kıymetli olduğu için parlar. */
+  --color-base: #eaeef5;        /* zemin: nötr paper — çok soğuk değil, çok krem değil */
+  --color-surface: #fbf8f0;     /* panel: sıcak fildişi (altın ailesi ama sakin) */
+  --color-raised: #ffffff;      /* kart: saf beyaz — panel üstünde belirgin elevation */
+  --color-sunken: #dde2eb;      /* footer: mid slate */
 
-  --color-line: #6a4f16;        /* çizgiler — koyu bronz */
-  --color-line-soft: #8b6b22;
+  --color-line: #d5c896;        /* ana çizgiler: soluk altın-kum (aksanın yankısı) */
+  --color-line-soft: #eadfb8;
 
-  --color-ink: #f4e6b8;         /* açık altın-krem — koyu bronz üstünde okunur */
-  --color-dim: #d9c58a;
-  --color-faint: #b8a163;
+  --color-ink: #14100a;         /* koyu ink — logo D'sinin siyahı, sıcak-koyu */
+  --color-dim: #4a3f2a;
+  --color-faint: #7a6b48;
 
-  --color-hivis: #14100a;       /* eylem rengi = tezat: koyu ink */
-  --color-hivis-ink: #f4e6b8;
+  --color-hivis: #b8913f;       /* aksan altın — logo gradient göbeği */
+  --color-hivis-ink: #14100a;
 
-  --color-blueprint: #4d3a10;
-  --color-blueprint-line: rgb(77 58 16 / 0.12);
-  --color-blueprint-fine: rgb(77 58 16 / 0.06);
+  --color-blueprint: #7a5920;
+  --color-blueprint-line: rgb(122 89 32 / 0.10);
+  --color-blueprint-fine: rgb(122 89 32 / 0.05);
 
-  --bg-glow-gold: rgb(163 126 44 / 0.30);
-  --bg-glow-blue: rgb(58 96 168 / 0.10);
-  --bg-glow-top: rgb(236 241 248 / 0.5);
+  --bg-glow-gold: rgb(217 178 92 / 0.25);
+  --bg-glow-blue: rgb(58 96 168 / 0.06);
+  --bg-glow-top: rgb(234 238 245 / 0.6);
 }
 
 body {
@@ -242,60 +244,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 html[data-theme="light"] [class~="bg-surface"],
 html[data-theme="light"] [class~="bg-raised"] {
   box-shadow:
-    inset 0 1px 0 rgba(255, 240, 200, 0.55),
-    inset 0 -1px 0 rgba(20, 16, 10, 0.18),
-    0 10px 24px -14px rgba(74, 55, 15, 0.35);
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 8px 22px -14px rgba(74, 55, 15, 0.18);
 }
-
-/* ---------- Altın metalik parıltı — aydınlık tema ----------
-   Statik dark→light→dark gradient (metal görünüm) + yavaş sweep animasyonu.
-   overflow-clipping yok; background-image + animasyonlu position kullanır. */
-html[data-theme="light"] [class~="bg-surface"] {
-  background-color: var(--color-surface);
-  background-image:
-    linear-gradient(120deg,
-      rgba(255, 250, 220, 0)   35%,
-      rgba(255, 250, 220, 0.55) 50%,
-      rgba(255, 250, 220, 0)   65%
-    ),
-    linear-gradient(160deg, rgba(255, 240, 190, 0.30) 0%, transparent 45%, rgba(20, 12, 4, 0.15) 100%);
-  background-repeat: no-repeat;
-  background-size: 260% 100%, 100% 100%;
-  background-position: 160% 0, 0 0;
-  animation: gold-shine 7s ease-in-out infinite;
-}
-html[data-theme="light"] [class~="bg-raised"] {
-  background-color: var(--color-raised);
-  background-image:
-    linear-gradient(120deg,
-      rgba(255, 250, 220, 0)   35%,
-      rgba(255, 250, 220, 0.50) 50%,
-      rgba(255, 250, 220, 0)   65%
-    ),
-    linear-gradient(160deg, rgba(255, 245, 200, 0.28) 0%, transparent 50%, rgba(20, 12, 4, 0.12) 100%);
-  background-repeat: no-repeat;
-  background-size: 280% 100%, 100% 100%;
-  background-position: 160% 0, 0 0;
-  animation: gold-shine 9s ease-in-out infinite 1.4s;
-}
-@keyframes gold-shine {
-  0%, 100% { background-position: 160% 0, 0 0; }
-  50%      { background-position: -60% 0, 0 0; }
-}
-/* Yarı-şeffaf overlay'lerde parıltı hesabı bozuluyor — kapat */
+/* Yarı-şeffaf overlay'lerde gölge sırıtır — kaldır */
 [class*="bg-surface/"],
 [class*="bg-raised/"] {
   box-shadow: none;
-  background-image: none !important;
-  animation: none !important;
-}
-/* Hareket hassasiyeti — sabit metalik gradient kalır, sweep durur */
-@media (prefers-reduced-motion: reduce) {
-  html[data-theme="light"] [class~="bg-surface"],
-  html[data-theme="light"] [class~="bg-raised"] {
-    animation: none;
-    background-position: 50% 0, 0 0;
-  }
 }
 /* Yarı-şeffaf overlay'lerde (bg-surface/60 vb.) gölge sırıtır — kaldır */
 [class*="bg-surface/"],
