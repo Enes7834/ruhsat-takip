@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate, NavLink } from "react-router-dom";
 import PermitsPage from "./pages/PermitsPage";
 import ThemeToggle from "./components/ThemeToggle";
+import MatrixRain from "./components/MatrixRain";
 
 // Kod bölme — ilk açılışta yalnız pano JS'si yüklenir
 const PermitDetailPage = lazy(() => import("./pages/PermitDetailPage"));
@@ -12,6 +13,7 @@ const Loading = () => <p className="mx-auto max-w-7xl px-5 py-20 text-dim">Yükl
 export default function App() {
   return (
     <>
+      <MatrixRain />
       <header className="sticky top-0 z-40 border-b border-line bg-base/85 backdrop-blur">
         <nav className="mx-auto flex max-w-7xl items-center gap-4 px-5 py-3 md:px-8">
           <NavLink to="/surec" className="flex items-center gap-2.5">
