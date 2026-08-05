@@ -44,30 +44,30 @@
 
 /* --- Aydınlık tema — html[data-theme="light"] üzerinden --- */
 html[data-theme="light"] {
-  /* Sıcak krem paleti — altın aksanla akrabalık.
-     Pure white yerine kağıt tonu; kartlar arasında elevation daha okunur. */
-  --color-base: #f5eeda;       /* sayfa zemini — açık krem */
-  --color-surface: #fdf7e5;    /* panel — daha aydınlık krem */
-  --color-raised: #fbf1cd;     /* kart — hafif altın çekik */
-  --color-sunken: #ebe0c2;     /* footer — mat kraft */
+  /* Buz mavisi zemin + altın-ivory paneller — logo grafında geçen
+     #f0d089 → #d9b25c → #b8913f gold ailesinden esinlenildi. */
+  --color-base: #ecf1f8;        /* buz mavisi zemin */
+  --color-surface: #f9f2d6;     /* sıcak altın-ivory panel */
+  --color-raised: #f3e4ac;      /* daha koyu altın — kartlar */
+  --color-sunken: #d5dfec;      /* mavi-gri footer */
 
-  --color-line: #d8c890;       /* çizgiler altın-kum */
-  --color-line-soft: #ead8a8;
+  --color-line: #d1c07c;        /* altın-kum çizgiler */
+  --color-line-soft: #e8d9a4;
 
-  --color-ink: #2a2114;        /* koyu kahve-siyah — kremle sıcak kontrast */
-  --color-dim: #55452a;
-  --color-faint: #7d6a49;
+  --color-ink: #0d1c34;         /* koyu lacivert — buz mavi ile klasik */
+  --color-dim: #38476a;
+  --color-faint: #5c6e8d;
 
-  --color-hivis: #8a5a12;      /* daha koyu altın-kahve — krem üstünde okunur */
-  --color-hivis-ink: #fdf7e5;
+  --color-hivis: #7a5210;       /* koyu bakır altın — altın panel üstünde okunur */
+  --color-hivis-ink: #f9f2d6;
 
-  --color-blueprint: #7a5920;
-  --color-blueprint-line: rgb(122 89 32 / 0.08);
-  --color-blueprint-fine: rgb(122 89 32 / 0.04);
+  --color-blueprint: #3a5a89;
+  --color-blueprint-line: rgb(58 90 137 / 0.09);
+  --color-blueprint-fine: rgb(58 90 137 / 0.045);
 
-  --bg-glow-gold: rgb(217 178 92 / 0.28);
-  --bg-glow-blue: rgb(160 120 40 / 0.08);
-  --bg-glow-top: rgb(253 247 229 / 0.6);
+  --bg-glow-gold: rgb(217 178 92 / 0.30);
+  --bg-glow-blue: rgb(58 96 168 / 0.12);
+  --bg-glow-top: rgb(236 241 248 / 0.5);
 }
 
 body {
