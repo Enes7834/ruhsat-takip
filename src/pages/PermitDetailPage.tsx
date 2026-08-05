@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { AutoStat, ManualField, StageStepper, StatusBadge, inputCls } from "../components/permits/PermitUI";
+import { AutoStat, ManualField, StageStepper, StatusBadge, StatusTally, inputCls } from "../components/permits/PermitUI";
 import PermitKanban from "../components/permits/PermitKanban";
 import TaskEditor from "../components/permits/TaskEditor";
 import {
@@ -236,6 +236,9 @@ export default function PermitDetailPage() {
           active={view === "liste" ? stage : undefined}
           onSelect={view === "liste" ? setStage : undefined}
         />
+        <div className="mt-4 border-t border-line-soft pt-3">
+          <StatusTally approved={d.approvedCount} submitted={d.submittedCount} revision={d.revisionCount} className="text-xs" />
+        </div>
       </div>
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

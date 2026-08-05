@@ -214,6 +214,8 @@ export type ProjectDerived = {
   /** En uzun süredir belediyede bekleyen evrak (gün) */
   worstWaitDays: number;
   worstWaitTitle: string | null;
+  approvedCount: number;
+  submittedCount: number;
   revisionCount: number;
   expiringCount: number;
   progress: number;
@@ -241,6 +243,8 @@ export function deriveProject(tasks: PermitTask[], now = Date.now()): ProjectDer
 
   let worstWaitDays = 0;
   let worstWaitTitle: string | null = null;
+  let approvedCount = 0;
+  let submittedCount = 0;
   let revisionCount = 0;
   let expiringCount = 0;
   let totalFees = 0;
@@ -248,7 +252,9 @@ export function deriveProject(tasks: PermitTask[], now = Date.now()): ProjectDer
   for (const t of tasks) {
     const d = deriveTask(t, now);
     totalFees += t.fee_amount ?? 0;
-    if (d.status === "revizyon") revisionCount++;
+    if (d.status === "onaylandi") approvedCount++;
+    else if (d.status === "sunuldu") submittedCount++;
+    else if (d.status === "revizyon") revisionCount++;
     if (d.expiryWarning && d.status !== "onaylandi") expiringCount++;
     if (d.daysAtMunicipality !== null && d.daysAtMunicipality > worstWaitDays) {
       worstWaitDays = d.daysAtMunicipality;
@@ -264,6 +270,8 @@ export function deriveProject(tasks: PermitTask[], now = Date.now()): ProjectDer
     totalFees,
     worstWaitDays,
     worstWaitTitle,
+    approvedCount,
+    submittedCount,
     revisionCount,
     expiringCount,
     progress: tasks.length ? done / tasks.length : 0,

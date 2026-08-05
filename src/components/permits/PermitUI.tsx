@@ -125,3 +125,49 @@ export function AutoStat({
 
 export const inputCls =
   "w-full rounded-sm border border-line bg-base px-3 py-2 text-sm text-ink outline-none transition-colors placeholder:text-faint focus:border-hivis";
+
+/** Onay / Teslim / Revizyon üçlü sayaç şeridi — evre çubuğunun altında kullanılır */
+export function StatusTally({
+  approved,
+  submitted,
+  revision,
+  className = "",
+}: {
+  approved: number;
+  submitted: number;
+  revision: number;
+  className?: string;
+}) {
+  return (
+    <div className={`flex items-center gap-3 text-[11px] font-semibold ${className}`}>
+      <Chip color="text-[#5ae5a0]" title={`${approved} onaylı evrak`} label={approved}>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M20 6L9 17l-5-5" />
+        </svg>
+      </Chip>
+      <Chip color="text-hivis" title={`${submitted} evrak belediyede`} label={submitted}>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M12 19V5M5 12l7-7 7 7" />
+        </svg>
+      </Chip>
+      <Chip color="text-[#ff8f8f]" title={`${revision} revizyonda`} label={revision}>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M12 20h9" />
+          <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
+        </svg>
+      </Chip>
+    </div>
+  );
+}
+
+function Chip({ color, title, label, children }: { color: string; title: string; label: number; children: ReactNode }) {
+  return (
+    <span
+      title={title}
+      className={`inline-flex items-center gap-1 tabular-nums ${label > 0 ? color : "text-faint/60"}`}
+    >
+      {children}
+      {label}
+    </span>
+  );
+}

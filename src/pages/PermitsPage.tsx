@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { StageStepper, StatusBadge, ManualField, inputCls } from "../components/permits/PermitUI";
+import { StageStepper, StatusBadge, StatusTally, ManualField, inputCls } from "../components/permits/PermitUI";
 import {
   MUNICIPALITIES,
   PERMIT_DEMO,
@@ -351,7 +351,10 @@ export default function PermitsPage() {
                     <td className="px-4 py-4 text-dim">{project.municipality}</td>
                     <td className="px-4 py-4">
                       <StageStepper stages={d.stages} compact />
-                      <p className="mt-2 text-[11px] text-faint">%{Math.round(d.progress * 100)} tamamlandı</p>
+                      <div className="mt-2 flex items-center justify-between gap-3">
+                        <StatusTally approved={d.approvedCount} submitted={d.submittedCount} revision={d.revisionCount} />
+                        <span className="text-[11px] text-faint">%{Math.round(d.progress * 100)} tamam</span>
+                      </div>
                     </td>
                     <td className="px-4 py-4">
                       <StatusBadge tone={d.revisionCount ? "red" : d.progress === 1 ? "green" : "amber"}>
@@ -421,11 +424,13 @@ export default function PermitsPage() {
                   <div className="mt-4">
                     <StageStepper stages={d.stages} compact />
                   </div>
-                  <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-xs text-dim">
-                    <span>%{Math.round(d.progress * 100)} tamam</span>
-                    {d.worstWaitDays > 0 && <span>{d.worstWaitDays} gündür belediyede</span>}
-                    {d.revisionCount > 0 && <span className="text-[#ff8f8f]">{d.revisionCount} revizyon</span>}
+                  <div className="mt-3 flex items-center justify-between gap-3">
+                    <StatusTally approved={d.approvedCount} submitted={d.submittedCount} revision={d.revisionCount} />
+                    <span className="text-[11px] text-faint">%{Math.round(d.progress * 100)} tamam</span>
                   </div>
+                  {d.worstWaitDays > 0 && (
+                    <p className="mt-2 text-xs text-dim">{d.worstWaitDays} gündür belediyede</p>
+                  )}
                   <p className="mt-3 text-xs text-hivis">{d.nextAction}</p>
                 </Link>
                 <div className="mt-4 flex gap-4 border-t border-line-soft pt-3 text-[11px] text-faint">
