@@ -44,9 +44,11 @@ create table if not exists public.permit_tariffs (
 
 alter table public.permit_tariffs enable row level security;
 
-create policy "permit_tariffs_auth_all"
+-- Giriş ekranı kaldırıldığı için politikalar anon rolüne de açık.
+drop policy if exists "permit_tariffs_auth_all" on public.permit_tariffs;
+create policy "permit_tariffs_all"
   on public.permit_tariffs for all
-  to authenticated using (true) with check (true);
+  to anon, authenticated using (true) with check (true);
 
 create table if not exists public.permit_tasks (
   id uuid primary key default gen_random_uuid(),
@@ -74,24 +76,30 @@ create index if not exists permit_tasks_project_idx on public.permit_tasks (proj
 alter table public.permit_projects enable row level security;
 alter table public.permit_tasks enable row level security;
 
--- Ruhsat verisi halka açık değildir: yalnız giriş yapmış ekip erişir
-create policy "permit_projects_auth_all"
-  on public.permit_projects for all
-  to authenticated using (true) with check (true);
+-- Giriş ekranı kaldırıldı: anon rolüne de tam erişim veriyoruz.
+drop policy if exists "permit_projects_auth_all" on public.permit_projects;
+drop policy if exists "permit_tasks_auth_all" on public.permit_tasks;
 
-create policy "permit_tasks_auth_all"
+create policy "permit_projects_all"
+  on public.permit_projects for all
+  to anon, authenticated using (true) with check (true);
+
+create policy "permit_tasks_all"
   on public.permit_tasks for all
-  to authenticated using (true) with check (true);
+  to anon, authenticated using (true) with check (true);
 
 -- Evrak/PDF deposu
 insert into storage.buckets (id, name, public)
 values ('ruhsat', 'ruhsat', true)
 on conflict (id) do nothing;
 
-create policy "ruhsat_auth_read"
-  on storage.objects for select
-  to authenticated using (bucket_id = 'ruhsat');
+drop policy if exists "ruhsat_auth_read" on storage.objects;
+drop policy if exists "ruhsat_auth_upload" on storage.objects;
 
-create policy "ruhsat_auth_upload"
+create policy "ruhsat_read"
+  on storage.objects for select
+  to anon, authenticated using (bucket_id = 'ruhsat');
+
+create policy "ruhsat_upload"
   on storage.objects for insert
-  to authenticated with check (bucket_id = 'ruhsat');
+  to anon, authenticated with check (bucket_id = 'ruhsat');

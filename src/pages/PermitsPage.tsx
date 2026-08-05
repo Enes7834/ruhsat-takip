@@ -41,8 +41,8 @@ export default function PermitsPage() {
       }
       setRows(projects.map((p) => ({ project: p, d: deriveProject(byProject.get(p.id) ?? []) })));
       setErr(null);
-    } catch {
-      setErr("Veri okunamadı. Supabase şeması kurulu mu? (supabase/permits_schema.sql)");
+    } catch (e) {
+      setErr(`Veri okunamadı: ${errMsg(e)} · Supabase şeması güncel mi? (supabase/schema.sql)`);
     }
     setLoading(false);
   };
@@ -97,8 +97,8 @@ export default function PermitsPage() {
       });
       setOpen(false);
       await load();
-    } catch {
-      setErr("Proje oluşturulamadı.");
+    } catch (e) {
+      setErr(`Proje oluşturulamadı: ${errMsg(e)}`);
     }
     setBusy(false);
   };
@@ -127,8 +127,8 @@ export default function PermitsPage() {
               try {
                 await seedDemoProject();
                 await load();
-              } catch {
-                setErr("Örnek dosya oluşturulamadı.");
+              } catch (e) {
+                setErr(`Örnek dosya oluşturulamadı: ${errMsg(e)}`);
               }
               setBusy(false);
             }}
@@ -391,6 +391,11 @@ export default function PermitsPage() {
       )}
     </section>
   );
+}
+
+function errMsg(e: unknown): string {
+  if (e && typeof e === "object" && "message" in e) return String((e as { message: unknown }).message);
+  return String(e);
 }
 
 function Kpi({ label, value, tone = "gray" }: { label: string; value: string; tone?: "gray" | "red" | "amber" }) {

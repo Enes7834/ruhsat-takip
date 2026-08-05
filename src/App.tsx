@@ -3,7 +3,6 @@ import PermitsPage from "./pages/PermitsPage";
 import PermitDetailPage from "./pages/PermitDetailPage";
 import TariffPage from "./pages/TariffPage";
 import CalculatorPage from "./pages/CalculatorPage";
-import AuthGate, { SignOutButton } from "./components/AuthGate";
 
 export default function App() {
   return (
@@ -53,14 +52,12 @@ export default function App() {
             <p className="hidden font-mono text-[11px] uppercase tracking-widest text-faint lg:block">
               Belediye Onay & Ruhsat Süreci
             </p>
-            <SignOutButton />
           </div>
         </nav>
         <div className="hazard-strip" />
       </header>
       <main>
-        <AuthGate>
-          <Routes>
+        <Routes>
           <Route path="/" element={<Navigate to="/surec" replace />} />
           <Route path="/surec" element={<PermitsPage />} />
           <Route path="/surec/:id" element={<PermitDetailPage />} />
@@ -70,8 +67,7 @@ export default function App() {
             path="*"
             element={<p className="mx-auto max-w-7xl px-5 py-20 text-dim">Sayfa bulunamadı.</p>}
           />
-          </Routes>
-        </AuthGate>
+        </Routes>
       </main>
       <footer className="mt-20 border-t border-line bg-sunken/60">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-6 md:px-8">
