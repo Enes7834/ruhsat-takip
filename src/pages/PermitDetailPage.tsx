@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { AutoStat, ManualField, StageStepper, StatusBadge, inputCls } from "../components/permits/PermitUI";
 import PermitKanban from "../components/permits/PermitKanban";
 import TaskEditor from "../components/permits/TaskEditor";
@@ -8,6 +8,7 @@ import {
   MUNICIPALITIES,
   STAGES,
   addPermitTask,
+  deletePermitProject,
   deriveProject,
   deriveTask,
   listPermitProjects,
@@ -24,6 +25,7 @@ type View = "slot" | "liste";
 
 export default function PermitDetailPage() {
   const { id = "" } = useParams();
+  const navigate = useNavigate();
   const [project, setProject] = useState<PermitProject | null>(null);
   const [tasks, setTasks] = useState<PermitTask[]>([]);
   const [view, setView] = useState<View>("slot");
@@ -92,11 +94,30 @@ export default function PermitDetailPage() {
 
   const stageTasks = tasks.filter((t) => t.stage === stage).sort((a, b) => a.order_index - b.order_index);
 
+  const onDelete = async () => {
+    if (!window.confirm(`"${project.name}" dosyası ve tüm evrakları silinsin mi? Bu işlem geri alınamaz.`)) return;
+    try {
+      await deletePermitProject(project.id);
+      navigate("/surec");
+    } catch (e) {
+      window.alert(`Silinemedi: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  };
+
   return (
     <section className="mx-auto max-w-7xl px-5 py-10 md:px-8">
-      <Link to="/surec" className="font-mono text-xs uppercase tracking-widest text-faint hover:text-hivis">
-        ← Ruhsat Panosu
-      </Link>
+      <div className="flex items-center justify-between gap-3">
+        <Link to="/surec" className="font-mono text-xs uppercase tracking-widest text-faint hover:text-hivis">
+          ← Ruhsat Panosu
+        </Link>
+        <button
+          type="button"
+          onClick={onDelete}
+          className="rounded-sm border border-line px-3 py-1.5 text-xs font-semibold text-faint transition-colors hover:border-[#ff6b6b] hover:text-[#ff8f8f]"
+        >
+          Dosyayı sil
+        </button>
+      </div>
 
       {/* Künye — manuel alanlar, alandan çıkınca kaydeder */}
       <div className="mt-4 grid gap-6 lg:grid-cols-[1fr_320px]">
