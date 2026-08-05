@@ -115,6 +115,14 @@ export default function PermitDetailPage() {
     if (!note?.trim()) return;
     bulkPatchStage(s, (t) => (t.approved_at ? null : { revision_note: note.trim(), submitted_at: null }));
   };
+  const bulkReset = (s: StageNo) => {
+    if (!window.confirm(`Evre ${s} — tüm evrakların durumu sıfırlansın mı? (Teslim/onay/revizyon silinir.)`)) return;
+    bulkPatchStage(s, (t) =>
+      t.submitted_at || t.approved_at || t.revision_note
+        ? { submitted_at: null, approved_at: null, revision_note: null }
+        : null,
+    );
+  };
 
   const removeTask = async (taskId: string) => {
     try {
@@ -310,6 +318,7 @@ export default function PermitDetailPage() {
             onBulkSubmit={bulkSubmit}
             onBulkApprove={bulkApprove}
             onBulkRevision={bulkRevision}
+            onBulkReset={bulkReset}
           />
         ) : (
           <>
@@ -338,6 +347,18 @@ export default function PermitDetailPage() {
                   className="rounded-sm border border-[#ff6b6b]/40 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-[#ff8f8f] transition-colors hover:border-[#ff6b6b] hover:bg-[#ff6b6b]/10"
                 >
                   Revizyon
+                </button>
+                <button
+                  type="button"
+                  onClick={() => bulkReset(stage)}
+                  aria-label="Evredeki tüm evrakları sıfırla"
+                  title="Sıfırla"
+                  className="grid h-[26px] w-[26px] place-items-center rounded-sm border border-line text-faint transition-colors hover:border-hivis hover:text-hivis"
+                >
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M3 12a9 9 0 1 0 3-6.7" />
+                    <path d="M3 4v5h5" />
+                  </svg>
                 </button>
               </div>
             </div>

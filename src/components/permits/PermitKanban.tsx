@@ -26,6 +26,7 @@ export default function PermitKanban({
   onBulkSubmit,
   onBulkApprove,
   onBulkRevision,
+  onBulkReset,
 }: {
   tasks: PermitTask[];
   stages: StageProgress[];
@@ -34,6 +35,7 @@ export default function PermitKanban({
   onBulkSubmit?: (stage: StageNo) => void;
   onBulkApprove?: (stage: StageNo) => void;
   onBulkRevision?: (stage: StageNo) => void;
+  onBulkReset?: (stage: StageNo) => void;
 }) {
   return (
     <div className="-mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 md:mx-0 md:grid md:grid-cols-2 md:px-0 xl:grid-cols-4">
@@ -59,8 +61,8 @@ export default function PermitKanban({
               <p className="mt-1.5 text-[11px] text-faint">
                 {prog.done}/{prog.total} onaylı{prog.blocked > 0 ? ` · ${prog.blocked} eksik` : ""}
               </p>
-              {(onBulkSubmit || onBulkApprove || onBulkRevision) && (
-                <div className="mt-2 flex gap-1.5">
+              {(onBulkSubmit || onBulkApprove || onBulkRevision || onBulkReset) && (
+                <div className="mt-2 flex items-center gap-1.5">
                   {onBulkSubmit && <Mini label="Teslim" title="Tüm evrağı bugüne teslim yap" onClick={() => onBulkSubmit(s.no)} />}
                   {onBulkApprove && (
                     <Mini label="Onayla" title="Tüm evrağı bugüne onayla" tone="green" onClick={() => onBulkApprove(s.no)} />
@@ -68,6 +70,7 @@ export default function PermitKanban({
                   {onBulkRevision && (
                     <Mini label="Revizyon" title="Tüm evrağa ortak revizyon notu" tone="red" onClick={() => onBulkRevision(s.no)} />
                   )}
+                  {onBulkReset && <ResetMini title="Evredeki tüm evrakları sıfırla" onClick={() => onBulkReset(s.no)} />}
                 </div>
               )}
             </header>
@@ -118,7 +121,7 @@ export default function PermitKanban({
                     )}
 
                     {/* Kart üstü hızlı aksiyon */}
-                    <div className="mt-2 flex gap-1.5">
+                    <div className="mt-2 flex items-center gap-1.5">
                       {!t.submitted_at && (
                         <Mini label="Teslim" title="Bugün belediyeye teslim edildi" onClick={() => onPatch(t.id, { submitted_at: todayISO() })} />
                       )}
@@ -139,6 +142,12 @@ export default function PermitKanban({
                           if (note !== null) onPatch(t.id, { revision_note: note || null, approved_at: null });
                         }}
                       />
+                      {(t.submitted_at || t.approved_at || t.revision_note) && (
+                        <ResetMini
+                          title="Bu evrağı sıfırla"
+                          onClick={() => onPatch(t.id, { submitted_at: null, approved_at: null, revision_note: null })}
+                        />
+                      )}
                     </div>
                   </article>
                 );
@@ -149,6 +158,23 @@ export default function PermitKanban({
         );
       })}
     </div>
+  );
+}
+
+function ResetMini({ title, onClick }: { title: string; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      title={title}
+      aria-label={title}
+      onClick={onClick}
+      className="ml-auto grid h-[24px] w-[24px] place-items-center rounded-sm border border-line text-faint transition-colors hover:border-hivis hover:text-hivis"
+    >
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M3 12a9 9 0 1 0 3-6.7" />
+        <path d="M3 4v5h5" />
+      </svg>
+    </button>
   );
 }
 
