@@ -54,8 +54,8 @@ export default function App() {
 
           <span
             aria-hidden="true"
-            className="flex-1 select-none text-center text-[14px] leading-none text-hivis md:text-[26px]"
-            style={{ fontFamily: '"Great Vibes", "Snell Roundhand", "Apple Chancery", cursive' }}
+            className="flex-1 select-none text-center text-[18px] leading-none text-hivis md:text-[30px]"
+            style={{ fontFamily: '"Sacramento", "Snell Roundhand", "Apple Chancery", cursive' }}
           >
             Ali Hamza Duran
           </span>
