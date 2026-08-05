@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { StageStepper, StatusBadge, ManualField, inputCls } from "../components/permits/PermitUI";
 import {
@@ -17,6 +17,35 @@ import {
 } from "../lib/permits";
 
 type Row = { project: PermitProject; d: ProjectDerived };
+type SortKey = "recent" | "name" | "wait" | "fees" | "risk";
+
+const SORT_LABEL: Record<SortKey, string> = {
+  recent: "En yeni",
+  name: "Proje adı",
+  wait: "Bekleme (uzun → kısa)",
+  fees: "Harç (yüksek → düşük)",
+  risk: "Risk (revizyon / süre)",
+};
+
+function sortRows(rows: Row[], key: SortKey): Row[] {
+  const copy = [...rows];
+  switch (key) {
+    case "name":
+      return copy.sort((a, b) => a.project.name.localeCompare(b.project.name, "tr"));
+    case "wait":
+      return copy.sort((a, b) => b.d.worstWaitDays - a.d.worstWaitDays);
+    case "fees":
+      return copy.sort((a, b) => b.d.totalFees - a.d.totalFees);
+    case "risk":
+      return copy.sort(
+        (a, b) =>
+          b.d.revisionCount * 100 + b.d.expiringCount * 10 + b.d.worstWaitDays -
+          (a.d.revisionCount * 100 + a.d.expiringCount * 10 + a.d.worstWaitDays),
+      );
+    default:
+      return copy.sort((a, b) => b.project.created_at.localeCompare(a.project.created_at));
+  }
+}
 
 export default function PermitsPage() {
   const navigate = useNavigate();
@@ -25,9 +54,10 @@ export default function PermitsPage() {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
-  const [hint, setHint] = useState(() => localStorage.getItem("permit_hint_off") !== "1");
   const [q, setQ] = useState("");
   const [onlyRisky, setOnlyRisky] = useState(false);
+  const [sortKey, setSortKey] = useState<SortKey>("recent");
+  const [toast, setToast] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -62,7 +92,7 @@ export default function PermitsPage() {
 
   const visible = useMemo(() => {
     const needle = q.trim().toLocaleLowerCase("tr");
-    return rows.filter(({ project, d }) => {
+    const filtered = rows.filter(({ project, d }) => {
       if (onlyRisky && !d.revisionCount && !d.expiringCount && d.worstWaitDays < 21) return false;
       if (!needle) return true;
       return [project.name, project.municipality, project.ada, project.parsel, project.pafta]
@@ -70,12 +100,40 @@ export default function PermitsPage() {
         .toLocaleLowerCase("tr")
         .includes(needle);
     });
-  }, [rows, q, onlyRisky]);
+    return sortRows(filtered, sortKey);
+  }, [rows, q, onlyRisky, sortKey]);
+
+  // "/" tuşu — arama kutusuna odaklan (girdi içindeyken yakalama)
+  const searchRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      const inField = target && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName);
+      if (e.key === "/" && !inField) {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  // Kısa toast bildirim — silme/kopyalama gibi işlemlerde
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 2200);
+    return () => clearTimeout(t);
+  }, [toast]);
 
   const onDelete = async (id: string, name: string) => {
     if (!window.confirm(`"${name}" dosyası ve tüm evrakları silinsin mi?`)) return;
-    await deletePermitProject(id);
-    await load();
+    try {
+      await deletePermitProject(id);
+      await load();
+      setToast(`"${name}" silindi`);
+    } catch (e) {
+      setErr(`Silinemedi: ${errMsg(e)}`);
+    }
   };
 
   const onCopy = async (id: string, name: string) => {
@@ -84,6 +142,7 @@ export default function PermitsPage() {
     try {
       await copyPermitProject(id, newName.trim());
       await load();
+      setToast(`"${newName.trim()}" oluşturuldu`);
     } catch (e) {
       setErr(`Kopyalanamadı: ${errMsg(e)}`);
     }
@@ -142,40 +201,6 @@ export default function PermitsPage() {
       </header>
 
       {err && <p className="mt-6 text-sm font-semibold text-[#ff8f8f]">{err}</p>}
-
-      {hint && (
-        <div className="mt-8 rounded-sm border border-line bg-surface/70 p-4">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="font-mono text-[10px] uppercase tracking-widest text-hivis">Nasıl kullanılır</p>
-              <ol className="mt-2 grid gap-2 text-sm text-dim md:grid-cols-3">
-                <li>
-                  <span className="font-semibold text-ink">1 · Dosya aç.</span> Proje adı, belediye ve
-                  ada/pafta/parsel yeterli — 25 evrak kalemi otomatik açılır.
-                </li>
-                <li>
-                  <span className="font-semibold text-ink">2 · Slot görünümünde işle.</span> Kartın altındaki
-                  Teslim / Onayla / Revizyon butonlarıyla tek tık.
-                </li>
-                <li>
-                  <span className="font-semibold text-ink">3 · Takip et.</span> Gün sayacı, harç toplamı ve
-                  kritik aksiyon uyarısı kendiliğinden güncellenir.
-                </li>
-              </ol>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                localStorage.setItem("permit_hint_off", "1");
-                setHint(false);
-              }}
-              className="shrink-0 rounded-sm border border-line px-2.5 py-1 text-[11px] text-faint hover:border-hivis hover:text-hivis"
-            >
-              Gizle ✕
-            </button>
-          </div>
-        </div>
-      )}
 
       {open && (
         <form
@@ -262,11 +287,25 @@ export default function PermitsPage() {
       {rows.length > 0 && (
         <div className="mt-8 flex flex-wrap items-center gap-3">
           <input
+            ref={searchRef}
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Proje, belediye veya ada/parsel ara…"
+            placeholder="Ara…  ( / ile odakla)"
             className={`${inputCls} max-w-xs`}
           />
+          <select
+            value={sortKey}
+            onChange={(e) => setSortKey(e.target.value as SortKey)}
+            className={`${inputCls} max-w-[200px]`}
+            aria-label="Sırala"
+            title="Sırala"
+          >
+            {(Object.keys(SORT_LABEL) as SortKey[]).map((k) => (
+              <option key={k} value={k}>
+                Sırala · {SORT_LABEL[k]}
+              </option>
+            ))}
+          </select>
           <label className="flex cursor-pointer items-center gap-2 text-xs text-dim">
             <input
               type="checkbox"
@@ -310,11 +349,20 @@ export default function PermitsPage() {
                 </tr>
               </thead>
               <tbody>
-                {visible.map(({ project, d }) => (
+                {visible.map(({ project, d }) => {
+                  const riskColor =
+                    d.revisionCount > 0
+                      ? "border-l-4 border-l-[#ff6b6b]"
+                      : d.expiringCount > 0 || d.worstWaitDays >= 21
+                        ? "border-l-4 border-l-hivis"
+                        : d.progress === 1
+                          ? "border-l-4 border-l-[#3ddc84]"
+                          : "border-l-4 border-l-transparent";
+                  return (
                   <tr
                     key={project.id}
                     onClick={() => navigate(`/surec/${project.id}`)}
-                    className="cursor-pointer border-t border-line-soft align-top transition-colors hover:bg-raised/70"
+                    className={`cursor-pointer border-t border-line-soft align-top transition-colors hover:bg-raised/70 ${riskColor}`}
                   >
                     <td className="px-4 py-4">
                       <Link to={`/surec/${project.id}`} className="font-semibold text-ink hover:text-hivis">
@@ -370,7 +418,8 @@ export default function PermitsPage() {
                       </div>
                     </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -416,6 +465,15 @@ export default function PermitsPage() {
             ))}
           </div>
         </>
+      )}
+
+      {toast && (
+        <div
+          role="status"
+          className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-sm border border-hivis/60 bg-surface px-4 py-2.5 text-sm font-semibold text-ink shadow-lg"
+        >
+          {toast}
+        </div>
       )}
     </section>
   );

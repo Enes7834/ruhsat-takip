@@ -17,10 +17,10 @@
   --color-line: #22334f;
   --color-line-soft: #182740;
 
-  /* --- Metin --- */
-  --color-ink: #e9edf6;
-  --color-dim: #a6b4cc;
-  --color-faint: #7c8ca8;
+  /* --- Metin — kontrast artırıldı, okunabilirlik önce --- */
+  --color-ink: #f5f7fb;
+  --color-dim: #c3cee1;
+  --color-faint: #9aa9c4;
 
   /* --- Eylem rengi: altın --- */
   --color-hivis: #d9b25c; /* altın */
@@ -48,12 +48,12 @@ html[data-theme="light"] {
   --color-raised: #f8fafd;
   --color-sunken: #edf1f7;
 
-  --color-line: #d5dbe6;
-  --color-line-soft: #e6eaf1;
+  --color-line: #cad2df;
+  --color-line-soft: #dfe4ee;
 
-  --color-ink: #0f172a;
-  --color-dim: #4a5677;
-  --color-faint: #6f7c98;
+  --color-ink: #0b1424;
+  --color-dim: #354363;
+  --color-faint: #566683;
 
   --color-hivis: #b8913f;
   --color-hivis-ink: #ffffff;
@@ -150,9 +150,23 @@ html {
 }
 
 body {
-  font-size: 0.9375rem; /* 15px — tablo yoğun ekranda 14'ten daha okunur */
+  font-size: 1rem; /* 16px — okunabilirlik önce */
   line-height: 1.6;
   letter-spacing: 0.005em;
+  font-weight: 450; /* Inter Tight'ın "medium"'dan biraz altı, daha okunur */
+}
+
+/* Küçük etiketlerde bile ağırlık artırıldı */
+.text-xs,
+.text-\[11px\],
+.text-\[10px\] {
+  font-weight: 500;
+}
+
+/* Kart / tablo başlıkları için daha güçlü kontrast */
+th {
+  font-weight: 700 !important;
+  color: var(--color-dim) !important;
 }
 
 h1,
