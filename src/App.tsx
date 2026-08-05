@@ -52,7 +52,14 @@ export default function App() {
             </svg>
           </NavLink>
 
-          <div className="ml-auto flex items-center gap-3">
+          <span
+            aria-hidden="true"
+            className="flex-1 select-none text-center text-[14px] leading-none text-hivis md:text-[26px]"
+            style={{ fontFamily: '"Great Vibes", "Snell Roundhand", "Apple Chancery", cursive' }}
+          >
+            Ali Hamza Duran
+          </span>
+          <div className="flex items-center gap-3">
             <p className="hidden font-mono text-[11px] uppercase tracking-widest text-faint lg:block">
               Belediye Onay & Ruhsat Süreci
             </p>
@@ -61,14 +68,6 @@ export default function App() {
         </nav>
         <div className="hazard-strip" />
       </header>
-      <aside
-        aria-hidden="true"
-        className="pointer-events-none fixed left-[100px] top-6 z-50 select-none text-[14px] leading-none text-hivis md:left-auto md:right-4 md:top-4 md:text-[26px]"
-        style={{ fontFamily: '"Great Vibes", "Snell Roundhand", "Apple Chancery", cursive' }}
-      >
-        Ali Hamza Duran
-      </aside>
-
       <main>
         <Suspense fallback={<Loading />}>
           <Routes>
