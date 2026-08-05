@@ -123,7 +123,7 @@ export const STAGE_BY_NO = new Map(STAGES.map((s) => [s.no, s]));
  * Yeni belediye eklemek için satır ekleyin.
  */
 export const MUNICIPALITIES: { name: string; query: string }[] = [
-  { name: "Sultangazi Belediyesi", query: "https://www.sultangazi.bel.tr" },
+  { name: "Sultangazi Belediyesi", query: "https://sultangazi.bel.tr/pages/evrak-sorgulama/45" },
   { name: "Gaziosmanpaşa Belediyesi", query: "https://www.gaziosmanpasa.bel.tr" },
   { name: "Eyüpsultan Belediyesi", query: "https://www.eyupsultan.bel.tr" },
   { name: "Esenler Belediyesi", query: "https://www.esenler.bel.tr" },
