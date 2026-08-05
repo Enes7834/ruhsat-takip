@@ -44,28 +44,28 @@
 
 /* --- Aydınlık tema — html[data-theme="light"] üzerinden --- */
 html[data-theme="light"] {
-  /* Buz mavisi zemin + altın-ivory paneller — logo grafında geçen
-     #f0d089 → #d9b25c → #b8913f gold ailesinden esinlenildi. */
+  /* D logo grafındaki altın: #f0d089 → #d9b25c → #b8913f.
+     Paneller doğrudan bu ailenin renkleri; zemin buz mavisi (kontrast). */
   --color-base: #ecf1f8;        /* buz mavisi zemin */
-  --color-surface: #f9f2d6;     /* sıcak altın-ivory panel */
-  --color-raised: #f3e4ac;      /* daha koyu altın — kartlar */
-  --color-sunken: #d5dfec;      /* mavi-gri footer */
+  --color-surface: #f0d089;     /* PANEL — D logo tepesi (açık altın) */
+  --color-raised: #d9b25c;      /* KART — logo göbeği (ana altın) */
+  --color-sunken: #b8913f;      /* footer — logo dibi (koyu altın) */
 
-  --color-line: #d1c07c;        /* altın-kum çizgiler */
-  --color-line-soft: #e8d9a4;
+  --color-line: #a67d2c;        /* çizgiler — koyu altın-bronz */
+  --color-line-soft: #c69a3e;
 
-  --color-ink: #0d1c34;         /* koyu lacivert — buz mavi ile klasik */
-  --color-dim: #38476a;
-  --color-faint: #5c6e8d;
+  --color-ink: #14100a;         /* logodaki ink rengi — altın üstünde en okunur */
+  --color-dim: #3a2f18;
+  --color-faint: #6a5628;
 
-  --color-hivis: #7a5210;       /* koyu bakır altın — altın panel üstünde okunur */
-  --color-hivis-ink: #f9f2d6;
+  --color-hivis: #14100a;       /* eylem rengi = altın panele tezat: koyu ink */
+  --color-hivis-ink: #f0d089;
 
-  --color-blueprint: #3a5a89;
-  --color-blueprint-line: rgb(58 90 137 / 0.09);
-  --color-blueprint-fine: rgb(58 90 137 / 0.045);
+  --color-blueprint: #6e4a12;
+  --color-blueprint-line: rgb(110 74 18 / 0.10);
+  --color-blueprint-fine: rgb(110 74 18 / 0.05);
 
-  --bg-glow-gold: rgb(217 178 92 / 0.30);
+  --bg-glow-gold: rgb(217 178 92 / 0.35);
   --bg-glow-blue: rgb(58 96 168 / 0.12);
   --bg-glow-top: rgb(236 241 248 / 0.5);
 }
