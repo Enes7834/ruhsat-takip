@@ -3,7 +3,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { AutoStat, ManualField, StageStepper, StatusBadge, inputCls } from "../components/permits/PermitUI";
 import PermitKanban from "../components/permits/PermitKanban";
 import TaskEditor from "../components/permits/TaskEditor";
-import FeeCalculator from "../components/permits/FeeCalculator";
 import {
   MUNICIPALITIES,
   STAGES,
@@ -13,7 +12,6 @@ import {
   deriveTask,
   listPermitProjects,
   listPermitTasks,
-  money,
   updatePermitProject,
   updatePermitTask,
   type PermitProject,
@@ -187,28 +185,17 @@ export default function PermitDetailPage() {
               value={d.worstWaitDays ? `${d.worstWaitDays} gün` : "—"}
               tone={d.worstWaitDays >= 21 ? "red" : "gray"}
             />
-            <AutoStat label="Toplam harç" value={money(d.totalFees)} />
+            <AutoStat
+              label="Revizyon"
+              value={d.revisionCount ? String(d.revisionCount) : "—"}
+              tone={d.revisionCount ? "red" : "gray"}
+            />
           </div>
           <div className="rounded-sm border border-hivis/40 bg-hivis/10 px-3 py-2.5">
             <p className="font-mono text-[10px] uppercase tracking-wide text-hivis">Kritik aksiyon</p>
             <p className="mt-1 text-sm text-ink">{d.nextAction}</p>
           </div>
         </aside>
-      </div>
-
-      {/* Harç hesabı — m² + belediye tarifesinden otomatik */}
-      <div className="mt-6">
-        <FeeCalculator
-          project={project}
-          tasks={tasks}
-          onPatchProject={patchProject}
-          onApply={(byTask) => {
-            for (const t of tasks) {
-              const amount = byTask[t.title];
-              if (amount !== undefined) patchTask(t.id, { fee_amount: Math.round(amount) });
-            }
-          }}
-        />
       </div>
 
       {/* Evre şeridi */}

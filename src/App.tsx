@@ -1,8 +1,6 @@
 import { Routes, Route, Navigate, NavLink } from "react-router-dom";
 import PermitsPage from "./pages/PermitsPage";
 import PermitDetailPage from "./pages/PermitDetailPage";
-import TariffPage from "./pages/TariffPage";
-import CalculatorPage from "./pages/CalculatorPage";
 import NotesPage from "./pages/NotesPage";
 import ThemeToggle from "./components/ThemeToggle";
 
@@ -34,22 +32,6 @@ export default function App() {
             Pano
           </NavLink>
           <NavLink
-            to="/tarife"
-            className={({ isActive }) =>
-              `hidden text-sm sm:block ${isActive ? "text-hivis" : "text-dim hover:text-ink"}`
-            }
-          >
-            Harç Tarifesi
-          </NavLink>
-          <NavLink
-            to="/hesapla"
-            className={({ isActive }) =>
-              `hidden text-sm sm:block ${isActive ? "text-hivis" : "text-dim hover:text-ink"}`
-            }
-          >
-            Hesaplama
-          </NavLink>
-          <NavLink
             to="/notlar"
             aria-label="Not defteri"
             title="Not defteri"
@@ -79,8 +61,6 @@ export default function App() {
           <Route path="/" element={<Navigate to="/surec" replace />} />
           <Route path="/surec" element={<PermitsPage />} />
           <Route path="/surec/:id" element={<PermitDetailPage />} />
-          <Route path="/tarife" element={<TariffPage />} />
-          <Route path="/hesapla" element={<CalculatorPage />} />
           <Route path="/notlar" element={<NotesPage />} />
           <Route
             path="*"

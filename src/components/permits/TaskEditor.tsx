@@ -4,7 +4,6 @@ import {
   dateTR,
   deriveTask,
   eBelediyeUrl,
-  money,
   todayISO,
   uploadPermitFile,
   type PermitTask,
@@ -104,17 +103,6 @@ export default function TaskEditor({
               ))}
             </select>
           </ManualField>
-          <ManualField label="Ödenen harç (₺)">
-            <input
-              key={`f-${task.id}`}
-              type="number"
-              min="0"
-              step="1"
-              defaultValue={task.fee_amount ?? ""}
-              onBlur={(e) => onPatch({ fee_amount: e.target.value ? Number(e.target.value) : null })}
-              className={inputCls}
-            />
-          </ManualField>
           <ManualField label="Belediyeye teslim" hint="sayaç başlar">
             <input
               type="date"
@@ -190,7 +178,6 @@ export default function TaskEditor({
           tone={d.expiryWarning ? "red" : "gray"}
         />
         <AutoStat label="Onay tarihi" value={dateTR(task.approved_at)} tone={task.approved_at ? "green" : "gray"} />
-        <AutoStat label="Harç" value={task.fee_amount ? money(task.fee_amount) : "—"} />
         {task.file_url ? (
           <a
             href={task.file_url}

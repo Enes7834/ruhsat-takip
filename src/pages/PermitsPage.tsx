@@ -10,20 +10,18 @@ import {
   deriveProject,
   listPermitProjects,
   listPermitTasks,
-  money,
   type PermitProject,
   type PermitTask,
   type ProjectDerived,
 } from "../lib/permits";
 
 type Row = { project: PermitProject; d: ProjectDerived };
-type SortKey = "recent" | "name" | "wait" | "fees" | "risk";
+type SortKey = "recent" | "name" | "wait" | "risk";
 
 const SORT_LABEL: Record<SortKey, string> = {
   recent: "En yeni",
   name: "Proje adı",
   wait: "Bekleme (uzun → kısa)",
-  fees: "Harç (yüksek → düşük)",
   risk: "Risk (revizyon / süre)",
 };
 
@@ -34,8 +32,6 @@ function sortRows(rows: Row[], key: SortKey): Row[] {
       return copy.sort((a, b) => a.project.name.localeCompare(b.project.name, "tr"));
     case "wait":
       return copy.sort((a, b) => b.d.worstWaitDays - a.d.worstWaitDays);
-    case "fees":
-      return copy.sort((a, b) => b.d.totalFees - a.d.totalFees);
     case "risk":
       return copy.sort(
         (a, b) =>
@@ -82,12 +78,11 @@ export default function PermitsPage() {
   }, []);
 
   const kpi = useMemo(() => {
-    const fees = rows.reduce((s, r) => s + r.d.totalFees, 0);
     const revisions = rows.reduce((s, r) => s + r.d.revisionCount, 0);
     const expiring = rows.reduce((s, r) => s + r.d.expiringCount, 0);
     const worst = rows.reduce((s, r) => Math.max(s, r.d.worstWaitDays), 0);
     const expiringRows = rows.filter((r) => r.d.expiringCount > 0);
-    return { fees, revisions, expiring, worst, expiringRows };
+    return { revisions, expiring, worst, expiringRows };
   }, [rows]);
 
   const visible = useMemo(() => {
@@ -161,10 +156,10 @@ export default function PermitsPage() {
         parsel: String(f.get("parsel") ?? ""),
         current_stage: 1,
         note: "",
-        area_m2: f.get("area_m2") ? Number(f.get("area_m2")) : null,
-        usage: (String(f.get("usage") ?? "konut") === "isyeri" ? "isyeri" : "konut") as PermitProject["usage"],
-        unit_count: f.get("unit_count") ? Number(f.get("unit_count")) : null,
-        parcel_m2: f.get("parcel_m2") ? Number(f.get("parcel_m2")) : null,
+        area_m2: null,
+        usage: "konut",
+        unit_count: null,
+        parcel_m2: null,
       });
       setOpen(false);
       await load();
@@ -185,7 +180,7 @@ export default function PermitsPage() {
             Belediye Onay & Ruhsat Panosu
           </h1>
           <p className="mt-2 text-sm text-dim">
-            Tüm projelerin evre durumu, bekleme süreleri ve harç toplamları tek ekranda.
+            Tüm projelerin evre durumu, evrak durumları ve bekleme süreleri tek ekranda.
             {PERMIT_DEMO && " (Demo modu — veriler bu tarayıcıda saklanır.)"}
           </p>
         </div>
@@ -205,7 +200,7 @@ export default function PermitsPage() {
       {open && (
         <form
           onSubmit={onCreate}
-          className="mt-8 grid gap-4 rounded-sm border border-line bg-surface p-5 md:grid-cols-5"
+          className="mt-8 grid gap-4 rounded-sm border border-line bg-surface p-5 md:grid-cols-3"
         >
           <div className="md:col-span-2">
             <ManualField label="Proje adı">
@@ -224,30 +219,13 @@ export default function PermitsPage() {
           <ManualField label="Ada">
             <input name="ada" className={inputCls} />
           </ManualField>
-          <div className="grid grid-cols-2 gap-3">
-            <ManualField label="Pafta">
-              <input name="pafta" className={inputCls} />
-            </ManualField>
-            <ManualField label="Parsel">
-              <input name="parsel" className={inputCls} />
-            </ManualField>
-          </div>
-          <ManualField label="İnşaat alanı (m²)" hint="harç hesabı">
-            <input name="area_m2" type="number" min="0" placeholder="4800" className={inputCls} />
+          <ManualField label="Pafta">
+            <input name="pafta" className={inputCls} />
           </ManualField>
-          <ManualField label="Kullanım">
-            <select name="usage" className={inputCls} defaultValue="konut">
-              <option value="konut">Konut</option>
-              <option value="isyeri">İşyeri</option>
-            </select>
+          <ManualField label="Parsel">
+            <input name="parsel" className={inputCls} />
           </ManualField>
-          <ManualField label="Bağımsız bölüm">
-            <input name="unit_count" type="number" min="0" placeholder="36" className={inputCls} />
-          </ManualField>
-          <ManualField label="Parsel alanı (m²)">
-            <input name="parcel_m2" type="number" min="0" placeholder="1200" className={inputCls} />
-          </ManualField>
-          <div className="md:col-span-5">
+          <div className="md:col-span-3">
             <button
               type="submit"
               disabled={busy}
@@ -260,9 +238,8 @@ export default function PermitsPage() {
       )}
 
       {/* KPI şeridi — tamamı otomatik hesaplanır */}
-      <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="mt-8 grid grid-cols-3 gap-3">
         <Kpi label="Aktif dosya" value={String(rows.length)} />
-        <Kpi label="Toplam belediye harcı" value={money(kpi.fees)} />
         <Kpi label="Revizyon bekleyen evrak" value={String(kpi.revisions)} tone={kpi.revisions ? "red" : "gray"} />
         <Kpi label="En uzun bekleyen" value={`${kpi.worst} gün`} tone={kpi.worst >= 21 ? "amber" : "gray"} />
       </div>
@@ -344,7 +321,6 @@ export default function PermitsPage() {
                   <th className="w-64 px-4 py-3">Evreler</th>
                   <th className="px-4 py-3">Aktif evre</th>
                   <th className="px-4 py-3">Bekleme</th>
-                  <th className="px-4 py-3 text-right">Harç</th>
                   <th className="px-4 py-3">Aksiyon</th>
                 </tr>
               </thead>
@@ -391,7 +367,6 @@ export default function PermitsPage() {
                         <span className="text-faint">—</span>
                       )}
                     </td>
-                    <td className="px-4 py-4 text-right font-mono text-dim">{money(d.totalFees)}</td>
                     <td className="max-w-xs px-4 py-4 text-xs text-dim">
                       {d.nextAction}
                       <div className="mt-2 flex gap-3 text-[11px] text-faint">
@@ -449,7 +424,7 @@ export default function PermitsPage() {
                   <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-xs text-dim">
                     <span>%{Math.round(d.progress * 100)} tamam</span>
                     {d.worstWaitDays > 0 && <span>{d.worstWaitDays} gündür belediyede</span>}
-                    <span>{money(d.totalFees)} harç</span>
+                    {d.revisionCount > 0 && <span className="text-[#ff8f8f]">{d.revisionCount} revizyon</span>}
                   </div>
                   <p className="mt-3 text-xs text-hivis">{d.nextAction}</p>
                 </Link>
