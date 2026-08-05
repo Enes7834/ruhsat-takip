@@ -44,28 +44,28 @@
 
 /* --- Aydınlık tema — html[data-theme="light"] üzerinden --- */
 html[data-theme="light"] {
-  /* Panel altın rengi: #FFD700 (klasik altın). Buz mavisi zemin ile kontrast. */
+  /* Panel altın rengi: #a37e2c (antik/bronz altın). Buz mavisi zemin ile kontrast. */
   --color-base: #ecf1f8;        /* buz mavisi zemin */
-  --color-surface: #FFD700;     /* PANEL — istenen altın */
-  --color-raised: #FFE066;      /* KART — daha aydınlık altın (panel üstü elevation) */
-  --color-sunken: #B8971A;      /* footer — koyu altın */
+  --color-surface: #a37e2c;     /* PANEL — istenen antik altın */
+  --color-raised: #b8923a;      /* KART — biraz aydınlık altın (elevation) */
+  --color-sunken: #7a5c1e;      /* footer — daha koyu altın */
 
-  --color-line: #B8971A;        /* çizgiler — koyu altın */
-  --color-line-soft: #D4B22A;
+  --color-line: #6a4f16;        /* çizgiler — koyu bronz */
+  --color-line-soft: #8b6b22;
 
-  --color-ink: #14100a;         /* koyu ink — altın üstünde en okunur */
-  --color-dim: #3a2f18;
-  --color-faint: #6a5628;
+  --color-ink: #f4e6b8;         /* açık altın-krem — koyu bronz üstünde okunur */
+  --color-dim: #d9c58a;
+  --color-faint: #b8a163;
 
-  --color-hivis: #14100a;       /* eylem rengi = altın panele tezat: koyu ink */
-  --color-hivis-ink: #FFD700;
+  --color-hivis: #14100a;       /* eylem rengi = tezat: koyu ink */
+  --color-hivis-ink: #f4e6b8;
 
-  --color-blueprint: #806A0F;
-  --color-blueprint-line: rgb(128 106 15 / 0.10);
-  --color-blueprint-fine: rgb(128 106 15 / 0.05);
+  --color-blueprint: #4d3a10;
+  --color-blueprint-line: rgb(77 58 16 / 0.12);
+  --color-blueprint-fine: rgb(77 58 16 / 0.06);
 
-  --bg-glow-gold: rgb(255 215 0 / 0.30);
-  --bg-glow-blue: rgb(58 96 168 / 0.12);
+  --bg-glow-gold: rgb(163 126 44 / 0.30);
+  --bg-glow-blue: rgb(58 96 168 / 0.10);
   --bg-glow-top: rgb(236 241 248 / 0.5);
 }
 
