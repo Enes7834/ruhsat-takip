@@ -3,6 +3,7 @@ import PermitsPage from "./pages/PermitsPage";
 import PermitDetailPage from "./pages/PermitDetailPage";
 import TariffPage from "./pages/TariffPage";
 import CalculatorPage from "./pages/CalculatorPage";
+import NotesPage from "./pages/NotesPage";
 import ThemeToggle from "./components/ThemeToggle";
 
 export default function App() {
@@ -48,6 +49,21 @@ export default function App() {
           >
             Hesaplama
           </NavLink>
+          <NavLink
+            to="/notlar"
+            aria-label="Not defteri"
+            title="Not defteri"
+            className={({ isActive }) =>
+              `grid h-8 w-8 place-items-center rounded-sm border transition-colors ${
+                isActive ? "border-hivis text-hivis" : "border-line text-dim hover:border-hivis hover:text-hivis"
+              }`
+            }
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 4a2 2 0 0 1 2-2h10l4 4v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z" />
+              <path d="M8 8h6M8 12h8M8 16h5" />
+            </svg>
+          </NavLink>
 
           <div className="ml-auto flex items-center gap-3">
             <p className="hidden font-mono text-[11px] uppercase tracking-widest text-faint lg:block">
@@ -65,6 +81,7 @@ export default function App() {
           <Route path="/surec/:id" element={<PermitDetailPage />} />
           <Route path="/tarife" element={<TariffPage />} />
           <Route path="/hesapla" element={<CalculatorPage />} />
+          <Route path="/notlar" element={<NotesPage />} />
           <Route
             path="*"
             element={<p className="mx-auto max-w-7xl px-5 py-20 text-dim">Sayfa bulunamadı.</p>}

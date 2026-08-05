@@ -88,6 +88,22 @@ create policy "permit_tasks_all"
   on public.permit_tasks for all
   to anon, authenticated using (true) with check (true);
 
+-- Not defteri
+create table if not exists public.permit_notes (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  title text not null default '',
+  body text not null default ''
+);
+
+alter table public.permit_notes enable row level security;
+
+drop policy if exists "permit_notes_all" on public.permit_notes;
+create policy "permit_notes_all"
+  on public.permit_notes for all
+  to anon, authenticated using (true) with check (true);
+
 -- Evrak/PDF deposu
 insert into storage.buckets (id, name, public)
 values ('ruhsat', 'ruhsat', true)
