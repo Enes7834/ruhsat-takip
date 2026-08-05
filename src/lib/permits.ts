@@ -117,26 +117,26 @@ export const STAGE_BY_NO = new Map(STAGES.map((s) => [s.no, s]));
 /* ----------------------- E-Belediye takip linki ----------------------- */
 
 /**
- * Belediye → evrak sorgulama sayfası. `{no}` varsa takip numarası yerleştirilir,
- * yoksa link sorgulama sayfasını açar. Yeni belediye eklemek için buraya satır ekleyin.
+ * Belediye ana sayfaları. Belediyelerin ortak / kararlı bir evrak takip
+ * endpoint kalıbı yok — bu yüzden yalnız homepage'e gidiyoruz; kullanıcı
+ * takip numarasını "Kopyala" ile alıp belediyenin kendi menüsünden arıyor.
+ * Yeni belediye eklemek için satır ekleyin.
  */
 export const MUNICIPALITIES: { name: string; query: string }[] = [
-  { name: "Sultangazi Belediyesi", query: "https://www.sultangazi.bel.tr/evrak-takip?no={no}" },
-  { name: "Gaziosmanpaşa Belediyesi", query: "https://www.gaziosmanpasa.bel.tr/evrak-takip?no={no}" },
-  { name: "Eyüpsultan Belediyesi", query: "https://www.eyupsultan.bel.tr/evrak-takip?no={no}" },
-  { name: "Esenler Belediyesi", query: "https://www.esenler.bel.tr/evrak-takip?no={no}" },
-  { name: "Bağcılar Belediyesi", query: "https://www.bagcilar.bel.tr/evrak-takip?no={no}" },
-  { name: "Başakşehir Belediyesi", query: "https://www.basaksehir.bel.tr/evrak-takip?no={no}" },
-  { name: "Arnavutköy Belediyesi", query: "https://www.arnavutkoy.bel.tr/evrak-takip?no={no}" },
-  { name: "İBB (İmar/Altyapı)", query: "https://www.ibb.istanbul/evrak-takip?no={no}" },
+  { name: "Sultangazi Belediyesi", query: "https://www.sultangazi.bel.tr" },
+  { name: "Gaziosmanpaşa Belediyesi", query: "https://www.gaziosmanpasa.bel.tr" },
+  { name: "Eyüpsultan Belediyesi", query: "https://www.eyupsultan.bel.tr" },
+  { name: "Esenler Belediyesi", query: "https://www.esenler.bel.tr" },
+  { name: "Bağcılar Belediyesi", query: "https://www.bagcilar.bel.tr" },
+  { name: "Başakşehir Belediyesi", query: "https://www.basaksehir.bel.tr" },
+  { name: "Arnavutköy Belediyesi", query: "https://www.arnavutkoy.bel.tr" },
+  { name: "İBB (İmar/Altyapı)", query: "https://www.ibb.istanbul" },
   { name: "Diğer", query: "" },
 ];
 
-export function eBelediyeUrl(municipality: string, trackingNo: string | null): string | null {
+export function eBelediyeUrl(municipality: string, _trackingNo: string | null): string | null {
   const m = MUNICIPALITIES.find((x) => x.name === municipality);
-  if (!m?.query) return null;
-  if (!trackingNo) return m.query.split("?")[0];
-  return m.query.replace("{no}", encodeURIComponent(trackingNo));
+  return m?.query || null;
 }
 
 /* -------------------------- Otomatik hesaplar -------------------------- */

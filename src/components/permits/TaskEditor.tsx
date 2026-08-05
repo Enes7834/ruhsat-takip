@@ -204,14 +204,32 @@ export default function TaskEditor({
           task.file_name && <p className="px-3 text-xs text-faint">📎 {task.file_name} (demo)</p>
         )}
         {link && (
-          <a
-            href={link}
-            target="_blank"
-            rel="noreferrer"
-            className="block rounded-sm bg-hivis px-3 py-2 text-center text-xs font-semibold text-hivis-ink hover:bg-[#e8c67a]"
-          >
-            E-Belediye'de sorgula →
-          </a>
+          <div className="space-y-1.5">
+            <a
+              href={link}
+              target="_blank"
+              rel="noreferrer"
+              className="block rounded-sm bg-hivis px-3 py-2 text-center text-xs font-semibold text-hivis-ink hover:brightness-110"
+            >
+              Belediye sitesi →
+            </a>
+            {task.tracking_no && (
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(task.tracking_no!);
+                  } catch {
+                    // Bazı tarayıcılarda clipboard API kısıtlı — yok say
+                  }
+                }}
+                className="w-full rounded-sm border border-line px-3 py-1.5 text-center text-[11px] font-semibold text-dim hover:border-hivis hover:text-hivis"
+                title="Takip numarasını panoya kopyala"
+              >
+                Takip no kopyala · {task.tracking_no}
+              </button>
+            )}
+          </div>
         )}
       </div>
     </div>
