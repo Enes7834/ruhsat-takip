@@ -546,6 +546,15 @@ export async function updatePermitTask(
   if (error) throw error;
 }
 
+export async function deletePermitTask(id: string): Promise<void> {
+  if (!supabase) {
+    writeLS(DEMO_T, readLS<PermitTask>(DEMO_T).filter((t) => t.id !== id));
+    return;
+  }
+  const { error } = await supabase.from("permit_tasks").delete().eq("id", id);
+  if (error) throw error;
+}
+
 /** Ek evrak satırı — katalogda olmayan belgeler için */
 export async function addPermitTask(
   projectId: string,

@@ -8,6 +8,7 @@ import {
   STAGES,
   addPermitTask,
   deletePermitProject,
+  deletePermitTask,
   deriveProject,
   deriveTask,
   listPermitProjects,
@@ -70,6 +71,16 @@ export default function PermitDetailPage() {
     setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, ...patch } : t)));
     void updatePermitTask(taskId, patch);
     setSaveTick((n) => n + 1);
+  };
+
+  const removeTask = async (taskId: string) => {
+    try {
+      await deletePermitTask(taskId);
+      setTasks((prev) => prev.filter((t) => t.id !== taskId));
+      if (openTask === taskId) setOpenTask(null);
+    } catch (e) {
+      window.alert(`Evrak silinemedi: ${e instanceof Error ? e.message : String(e)}`);
+    }
   };
 
   const patchProject = (patch: Partial<PermitProject>) => {
@@ -270,7 +281,12 @@ export default function PermitDetailPage() {
                     </button>
                     {openTask === t.id && (
                       <div className="border-t border-line-soft p-4">
-                        <TaskEditor task={t} municipality={project.municipality} onPatch={(p) => patchTask(t.id, p)} />
+                        <TaskEditor
+                          task={t}
+                          municipality={project.municipality}
+                          onPatch={(p) => patchTask(t.id, p)}
+                          onDelete={() => void removeTask(t.id)}
+                        />
                       </div>
                     )}
                   </div>
@@ -306,7 +322,12 @@ export default function PermitDetailPage() {
                 Kapat ✕
               </button>
             </div>
-            <TaskEditor task={selected} municipality={project.municipality} onPatch={(p) => patchTask(selected.id, p)} />
+            <TaskEditor
+              task={selected}
+              municipality={project.municipality}
+              onPatch={(p) => patchTask(selected.id, p)}
+              onDelete={() => void removeTask(selected.id)}
+            />
             <p className="mt-4 text-center text-[11px] text-faint">
               Değişiklikler anında kaydedilir · kapatmak için <kbd className="rounded-sm border border-line px-1">Esc</kbd>
             </p>

@@ -25,10 +25,12 @@ export default function TaskEditor({
   task,
   municipality,
   onPatch,
+  onDelete,
 }: {
   task: PermitTask;
   municipality: string;
   onPatch: (patch: Partial<PermitTask>) => void;
+  onDelete?: () => void;
 }) {
   const d = deriveTask(task);
   const [uploading, setUploading] = useState(false);
@@ -66,6 +68,17 @@ export default function TaskEditor({
               tone="gray"
               onClick={() => onPatch({ submitted_at: null, approved_at: null, revision_note: null })}
             />
+          )}
+          {onDelete && (
+            <button
+              type="button"
+              onClick={() => {
+                if (window.confirm(`"${task.title}" evrağı silinsin mi?`)) onDelete();
+              }}
+              className="ml-auto rounded-sm border border-line px-3 py-1.5 text-xs font-semibold text-faint transition-colors hover:border-[#ff6b6b] hover:text-[#ff8f8f]"
+            >
+              Evrağı sil
+            </button>
           )}
         </div>
 
