@@ -44,28 +44,30 @@
 
 /* --- Aydınlık tema — html[data-theme="light"] üzerinden --- */
 html[data-theme="light"] {
-  --color-base: #f4f6fb;
-  --color-surface: #ffffff;
-  --color-raised: #f8fafd;
-  --color-sunken: #edf1f7;
+  /* Sıcak krem paleti — altın aksanla akrabalık.
+     Pure white yerine kağıt tonu; kartlar arasında elevation daha okunur. */
+  --color-base: #f5eeda;       /* sayfa zemini — açık krem */
+  --color-surface: #fdf7e5;    /* panel — daha aydınlık krem */
+  --color-raised: #fbf1cd;     /* kart — hafif altın çekik */
+  --color-sunken: #ebe0c2;     /* footer — mat kraft */
 
-  --color-line: #cad2df;
-  --color-line-soft: #dfe4ee;
+  --color-line: #d8c890;       /* çizgiler altın-kum */
+  --color-line-soft: #ead8a8;
 
-  --color-ink: #0b1424;
-  --color-dim: #354363;
-  --color-faint: #566683;
+  --color-ink: #2a2114;        /* koyu kahve-siyah — kremle sıcak kontrast */
+  --color-dim: #55452a;
+  --color-faint: #7d6a49;
 
-  --color-hivis: #b8913f;
-  --color-hivis-ink: #ffffff;
+  --color-hivis: #8a5a12;      /* daha koyu altın-kahve — krem üstünde okunur */
+  --color-hivis-ink: #fdf7e5;
 
-  --color-blueprint: #385a8a;
-  --color-blueprint-line: rgb(56 90 138 / 0.08);
-  --color-blueprint-fine: rgb(56 90 138 / 0.04);
+  --color-blueprint: #7a5920;
+  --color-blueprint-line: rgb(122 89 32 / 0.08);
+  --color-blueprint-fine: rgb(122 89 32 / 0.04);
 
-  --bg-glow-gold: rgb(217 178 92 / 0.20);
-  --bg-glow-blue: rgb(58 96 168 / 0.10);
-  --bg-glow-top: rgb(255 255 255 / 0.6);
+  --bg-glow-gold: rgb(217 178 92 / 0.28);
+  --bg-glow-blue: rgb(160 120 40 / 0.08);
+  --bg-glow-top: rgb(253 247 229 / 0.6);
 }
 
 body {
