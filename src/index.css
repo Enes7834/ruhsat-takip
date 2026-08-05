@@ -44,28 +44,27 @@
 
 /* --- Aydınlık tema — html[data-theme="light"] üzerinden --- */
 html[data-theme="light"] {
-  /* D logo grafındaki altın: #f0d089 → #d9b25c → #b8913f.
-     Paneller doğrudan bu ailenin renkleri; zemin buz mavisi (kontrast). */
+  /* Panel altın rengi: #FFD700 (klasik altın). Buz mavisi zemin ile kontrast. */
   --color-base: #ecf1f8;        /* buz mavisi zemin */
-  --color-surface: #f0d089;     /* PANEL — D logo tepesi (açık altın) */
-  --color-raised: #d9b25c;      /* KART — logo göbeği (ana altın) */
-  --color-sunken: #b8913f;      /* footer — logo dibi (koyu altın) */
+  --color-surface: #FFD700;     /* PANEL — istenen altın */
+  --color-raised: #FFE066;      /* KART — daha aydınlık altın (panel üstü elevation) */
+  --color-sunken: #B8971A;      /* footer — koyu altın */
 
-  --color-line: #a67d2c;        /* çizgiler — koyu altın-bronz */
-  --color-line-soft: #c69a3e;
+  --color-line: #B8971A;        /* çizgiler — koyu altın */
+  --color-line-soft: #D4B22A;
 
-  --color-ink: #14100a;         /* logodaki ink rengi — altın üstünde en okunur */
+  --color-ink: #14100a;         /* koyu ink — altın üstünde en okunur */
   --color-dim: #3a2f18;
   --color-faint: #6a5628;
 
   --color-hivis: #14100a;       /* eylem rengi = altın panele tezat: koyu ink */
-  --color-hivis-ink: #f0d089;
+  --color-hivis-ink: #FFD700;
 
-  --color-blueprint: #6e4a12;
-  --color-blueprint-line: rgb(110 74 18 / 0.10);
-  --color-blueprint-fine: rgb(110 74 18 / 0.05);
+  --color-blueprint: #806A0F;
+  --color-blueprint-line: rgb(128 106 15 / 0.10);
+  --color-blueprint-fine: rgb(128 106 15 / 0.05);
 
-  --bg-glow-gold: rgb(217 178 92 / 0.35);
+  --bg-glow-gold: rgb(255 215 0 / 0.30);
   --bg-glow-blue: rgb(58 96 168 / 0.12);
   --bg-glow-top: rgb(236 241 248 / 0.5);
 }
