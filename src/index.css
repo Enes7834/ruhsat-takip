@@ -7,10 +7,11 @@
    ============================================================ */
 
 @theme {
-  /* --- Zemin: gece mavisi katmanlar --- */
+  /* --- Zemin: gece mavisi katmanlar (surface/raised bir tık aydınlatıldı,
+       arkadaki animasyonla karışma bitsin, elevation belirgin olsun) --- */
   --color-base: #080e1c; /* sayfa zemini */
-  --color-surface: #0f1930; /* panel */
-  --color-raised: #16223f; /* kart / yükseltilmiş yüzey */
+  --color-surface: #111d38; /* panel */
+  --color-raised: #1a2748; /* kart / yükseltilmiş yüzey */
   --color-sunken: #050912; /* footer, kuyu */
 
   /* --- Çizgiler --- */
@@ -226,6 +227,27 @@ button {
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(0.7);
   cursor: pointer;
+}
+
+/* ---------- Derinlik ----------
+   Ana kart yüzeylerine hafif dış gölge + ince üst kaş çizgisi.
+   Matrix animasyonu geride kalır; kartlar öne çıkar. */
+[class~="bg-surface"],
+[class~="bg-raised"] {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.025),
+    0 12px 30px -18px rgba(0, 0, 0, 0.55);
+}
+html[data-theme="light"] [class~="bg-surface"],
+html[data-theme="light"] [class~="bg-raised"] {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 8px 20px -12px rgba(20, 30, 55, 0.10);
+}
+/* Yarı-şeffaf overlay'lerde (bg-surface/60 vb.) gölge sırıtır — kaldır */
+[class*="bg-surface/"],
+[class*="bg-raised/"] {
+  box-shadow: none;
 }
 
 /* ---------- Yazdırma / PDF ---------- */

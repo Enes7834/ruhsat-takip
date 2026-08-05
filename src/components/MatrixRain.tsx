@@ -101,7 +101,7 @@ export default function MatrixRain() {
     <canvas
       ref={ref}
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 opacity-70"
+      className="pointer-events-none fixed inset-0 opacity-40 md:opacity-45"
       style={{ zIndex: -1 }}
     />
   );

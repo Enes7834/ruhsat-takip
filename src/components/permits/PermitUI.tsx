@@ -116,7 +116,7 @@ export function AutoStat({
           ? "text-hivis"
           : "text-ink";
   return (
-    <div className="rounded-sm border border-line-soft bg-base/60 px-3 py-2">
+    <div className="rounded-sm border border-line-soft bg-base px-3 py-2">
       <p className="font-mono text-[10px] uppercase tracking-wide text-faint">{label}</p>
       <p className={`mt-0.5 text-sm font-semibold ${color}`}>{value}</p>
     </div>

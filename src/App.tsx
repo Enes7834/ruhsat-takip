@@ -14,7 +14,7 @@ export default function App() {
   return (
     <>
       <MatrixRain />
-      <header className="sticky top-0 z-40 border-b border-line bg-base/85 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b border-line bg-base/95 shadow-[0_10px_30px_-20px_rgba(0,0,0,0.7)] backdrop-blur">
         <nav className="mx-auto flex max-w-7xl items-center gap-4 px-5 py-3 md:px-8">
           <NavLink to="/surec" className="flex items-center gap-2.5">
             <span className="brand-mark">D</span>
@@ -84,7 +84,7 @@ export default function App() {
           </Routes>
         </Suspense>
       </main>
-      <footer className="mt-20 border-t border-line bg-sunken/60">
+      <footer className="mt-20 border-t border-line bg-sunken">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-6 md:px-8">
           <p className="text-xs text-faint">
             <span className="font-semibold text-dim">Duran İnşaat</span> · Sultangazi, İstanbul — ruhsat

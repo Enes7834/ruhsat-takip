@@ -47,7 +47,7 @@ export default function PermitKanban({
         return (
           <section
             key={s.no}
-            className="w-[85vw] flex-none snap-start rounded-sm border border-line bg-surface/60 p-3 md:w-auto"
+            className="w-[85vw] flex-none snap-start rounded-sm border border-line bg-surface p-3 shadow-[0_12px_28px_-18px_rgba(0,0,0,0.55)] md:w-auto"
           >
             <header className="mb-3 border-b border-line-soft pb-3">
               <div className="flex items-center justify-between">
