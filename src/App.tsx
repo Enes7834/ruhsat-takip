@@ -1,8 +1,13 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate, NavLink } from "react-router-dom";
 import PermitsPage from "./pages/PermitsPage";
-import PermitDetailPage from "./pages/PermitDetailPage";
-import NotesPage from "./pages/NotesPage";
 import ThemeToggle from "./components/ThemeToggle";
+
+// Kod bölme — ilk açılışta yalnız pano JS'si yüklenir
+const PermitDetailPage = lazy(() => import("./pages/PermitDetailPage"));
+const NotesPage = lazy(() => import("./pages/NotesPage"));
+
+const Loading = () => <p className="mx-auto max-w-7xl px-5 py-20 text-dim">Yükleniyor…</p>;
 
 export default function App() {
   return (
@@ -56,17 +61,27 @@ export default function App() {
         </nav>
         <div className="hazard-strip" />
       </header>
+      <aside
+        aria-hidden="true"
+        className="pointer-events-none fixed right-2 top-24 z-30 hidden select-none font-mono text-[10px] uppercase tracking-[0.32em] text-faint md:block"
+        style={{ writingMode: "vertical-rl" }}
+      >
+        Ali Hamza Duran
+      </aside>
+
       <main>
-        <Routes>
-          <Route path="/" element={<Navigate to="/surec" replace />} />
-          <Route path="/surec" element={<PermitsPage />} />
-          <Route path="/surec/:id" element={<PermitDetailPage />} />
-          <Route path="/notlar" element={<NotesPage />} />
-          <Route
-            path="*"
-            element={<p className="mx-auto max-w-7xl px-5 py-20 text-dim">Sayfa bulunamadı.</p>}
-          />
-        </Routes>
+        <Suspense fallback={<Loading />}>
+          <Routes>
+            <Route path="/" element={<Navigate to="/surec" replace />} />
+            <Route path="/surec" element={<PermitsPage />} />
+            <Route path="/surec/:id" element={<PermitDetailPage />} />
+            <Route path="/notlar" element={<NotesPage />} />
+            <Route
+              path="*"
+              element={<p className="mx-auto max-w-7xl px-5 py-20 text-dim">Sayfa bulunamadı.</p>}
+            />
+          </Routes>
+        </Suspense>
       </main>
       <footer className="mt-20 border-t border-line bg-sunken/60">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-6 md:px-8">

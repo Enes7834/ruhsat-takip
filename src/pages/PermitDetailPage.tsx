@@ -53,15 +53,28 @@ export default function PermitDetailPage() {
     return () => window.removeEventListener("keydown", onKey);
   }, [openTask]);
 
+  const [loadErr, setLoadErr] = useState<string | null>(null);
+
   useEffect(() => {
+    let cancelled = false;
     void (async () => {
-      const [projects, list] = await Promise.all([listPermitProjects(), listPermitTasks(id)]);
-      const p = projects.find((x) => x.id === id) ?? null;
-      setProject(p);
-      setTasks(list);
-      if (p) setStage(deriveProject(list).activeStage);
-      setLoading(false);
+      try {
+        const [projects, list] = await Promise.all([listPermitProjects(), listPermitTasks(id)]);
+        if (cancelled) return;
+        const p = projects.find((x) => x.id === id) ?? null;
+        setProject(p);
+        setTasks(list);
+        if (p) setStage(deriveProject(list).activeStage);
+        setLoadErr(null);
+      } catch (e) {
+        if (!cancelled) setLoadErr(e instanceof Error ? e.message : String(e));
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
     })();
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
   const d = useMemo(() => deriveProject(tasks), [tasks]);
@@ -91,6 +104,13 @@ export default function PermitDetailPage() {
   };
 
   if (loading) return <p className="mx-auto max-w-7xl px-5 py-20 text-dim">Yükleniyor…</p>;
+  if (loadErr)
+    return (
+      <div className="mx-auto max-w-7xl px-5 py-20">
+        <p className="text-sm font-semibold text-[#ff8f8f]">Dosya yüklenemedi: {loadErr}</p>
+        <Link to="/surec" className="mt-4 inline-block text-hivis">← Panoya dön</Link>
+      </div>
+    );
   if (!project)
     return (
       <div className="mx-auto max-w-7xl px-5 py-20">

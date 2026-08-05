@@ -87,15 +87,13 @@ body::before {
   pointer-events: none;
   background-image:
     linear-gradient(var(--color-blueprint-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--color-blueprint-line) 1px, transparent 1px),
-    linear-gradient(var(--color-blueprint-fine) 1px, transparent 1px),
-    linear-gradient(90deg, var(--color-blueprint-fine) 1px, transparent 1px);
-  background-size:
-    80px 80px,
-    80px 80px,
-    16px 16px,
-    16px 16px;
+    linear-gradient(90deg, var(--color-blueprint-line) 1px, transparent 1px);
+  background-size: 80px 80px;
   mask-image: radial-gradient(ellipse 120% 80% at 50% 0%, #000 35%, transparent 85%);
+}
+/* Mobilde ince ızgara katmanını kapat — pahalı repaint azalır */
+@media (max-width: 640px) {
+  body::before { display: none; }
 }
 
 body::after {
