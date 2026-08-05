@@ -262,7 +262,7 @@ export default function PermitsPage() {
       )}
 
       {rows.length > 0 && (
-        <div className="mt-8 flex flex-wrap items-center gap-3">
+        <div className="mt-8 flex flex-wrap items-center gap-3 rounded-sm border border-line bg-surface px-4 py-3">
           <input
             ref={searchRef}
             value={q}

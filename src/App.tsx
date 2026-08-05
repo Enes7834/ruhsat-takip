@@ -12,7 +12,7 @@ const Loading = () => <p className="mx-auto max-w-7xl px-5 py-20 text-dim">Yükl
 
 export default function App() {
   return (
-    <>
+    <div className="flex min-h-screen flex-col">
       <MatrixRain />
       <header className="sticky top-0 z-40 border-b border-line bg-base/95 shadow-[0_10px_30px_-20px_rgba(0,0,0,0.7)] backdrop-blur">
         <nav className="mx-auto flex max-w-7xl items-center gap-4 px-5 py-3 md:px-8">
@@ -70,7 +70,7 @@ export default function App() {
         </nav>
         <div className="hazard-strip" />
       </header>
-      <main>
+      <main className="flex-1">
         <Suspense fallback={<Loading />}>
           <Routes>
             <Route path="/" element={<Navigate to="/surec" replace />} />
@@ -84,7 +84,7 @@ export default function App() {
           </Routes>
         </Suspense>
       </main>
-      <footer className="mt-20 border-t border-line bg-sunken">
+      <footer className="border-t border-line bg-sunken">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-6 md:px-8">
           <p className="text-xs text-faint">
             <span className="font-semibold text-dim">Duran İnşaat</span> · Sultangazi, İstanbul — ruhsat
@@ -95,6 +95,6 @@ export default function App() {
           </p>
         </div>
       </footer>
-    </>
+    </div>
   );
 }
